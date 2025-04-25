@@ -5,6 +5,7 @@ import WorkDay from "./WorkDay";
 import { useCalendar } from "@/app/context/CalendarContext";
 import { getDaysInMonth } from "@/app/utils/dateUtils";
 import { useProjects } from "@/app/context/ProjectContext";
+import TotalBar from "./TotalBar";
 
 export default function Calendar() {
   const { year, month } = useCalendar();
@@ -26,7 +27,7 @@ export default function Calendar() {
                 {daysArray.map((day) => (
                   <WorkDay
                     key={`${proj.projectKey}-${day.toString()}`}
-                    date={day}
+                    date={`${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`}
                     projectKey={proj.projectKey}
                   />
                 ))}

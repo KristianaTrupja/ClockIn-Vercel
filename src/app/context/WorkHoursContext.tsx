@@ -4,7 +4,10 @@ import React, { createContext, useContext, useState, ReactNode } from "react";
 
 type WorkHours = {
   [date: string]: {
-    [projectKey: string]: number;
+    [projectKey: string]: {
+      hours: number;
+      note?: string;
+    };
   };
 };
 
@@ -18,12 +21,12 @@ const WorkHoursContext = createContext<WorkHoursContextType | undefined>(undefin
 export function WorkHoursProvider({ children }: { children: ReactNode }) {
   const [workHours, setWorkHours] = useState<WorkHours>({});
 
-  const setWorkHoursForProject = (date: string, projectKey: string, hours: number) => {
+  const setWorkHoursForProject = (date: string, projectKey: string, hours: number, note?: string) => {
     setWorkHours(prev => ({
       ...prev,
       [date]: {
         ...prev[date],
-        [projectKey]: hours
+        [projectKey]: { hours, note }
       }
     }));
   };

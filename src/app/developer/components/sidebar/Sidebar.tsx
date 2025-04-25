@@ -80,7 +80,7 @@ export default function Sidebar() {
   return (
     <>
       <SidebarHeader />
-      <aside className="mt-40 absolute top-0 w-64 h-[80vh] bg-[#E3F0FF] shadow-md border-2 border-[#244B77] flex flex-col justify-between align-center">
+      <aside className="mt-40 absolute top-0 w-64 min-h-[80vh] bg-[#E3F0FF] shadow-md border-2 border-[#244B77] flex flex-col justify-between align-center">
         <SidebarList sidebarProjects={sidebarProjects} />
         <Button className="w-fit m-auto" onClick={() => setIsModalOpen(true)}>
           Shto të ri
