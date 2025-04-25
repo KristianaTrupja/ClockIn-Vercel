@@ -10,7 +10,7 @@ export default function DashboardLayout({ children }:{children: React.ReactNode}
     <CalendarProvider>
     <ProjectProvider>
     <section
-      className="2xl:mx-20 mt-11 min-h-screen"
+      className="2xl:mx-35 mt-11 min-h-screen"
       style={{ fontFamily: "var(--font-anek-bangla)" }}
     >
       <div className="flex justify-between mb-6 items-baseline">
@@ -25,7 +25,7 @@ export default function DashboardLayout({ children }:{children: React.ReactNode}
         </h4>
       </div>
       <Sidebar/>
-      <main className="ml-64">{children}</main>
+      <main className="ml-64 2xl:w-fit">{children}</main>
       
     </section>
     </ProjectProvider>

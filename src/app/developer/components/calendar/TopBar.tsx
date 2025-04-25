@@ -24,7 +24,6 @@ export default function TopBar() {
           </div>
         );
       })}
-      <p className="text-xl border-[1px] border-gray-300 p-1">Total</p>
     </div>
   );
 }

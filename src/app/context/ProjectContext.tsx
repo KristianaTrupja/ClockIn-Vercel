@@ -17,7 +17,7 @@ export const ProjectProvider = ({ children }: { children: ReactNode }) => {
   const allProjectKeys = sidebarProjects.flatMap((p) =>
     p.projects.map((proj) => proj.projectKey)
   );
-
+  
   return (
     <ProjectContext.Provider value={{ sidebarProjects, setSidebarProjects, allProjectKeys }}>
       {children}

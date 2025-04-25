@@ -3,6 +3,8 @@ import { useState } from "react";
 import { useWorkHours } from "@/app/context/WorkHoursContext";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/app/components/ui/Modal";
+import { isWeekend } from "@/app/utils/dateUtils";
+import { useCalendar } from "@/app/context/CalendarContext";
 
 type DayBoxProps = {
   date: string;
@@ -10,22 +12,23 @@ type DayBoxProps = {
 };
 
 export default function WorkDay({ date, projectKey }: DayBoxProps) {
+   const { month, year } = useCalendar();
+  const isWeekendDay = isWeekend(year, month, parseInt(date));
   const { workHours, setWorkHoursForProject } = useWorkHours();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [inputValue, setInputValue] = useState<string>("");
   const [textareaValue, setTextAreaValue] = useState<string>("");
   const currentDayData = workHours[date] || {};
   const currentValue = currentDayData[projectKey] ?? "";
-
   const openModal = () => {
     setInputValue(currentValue.toString());
     setIsModalOpen(true);
   };
-
+  
   const handleClose = () => {
     setIsModalOpen(false);
   };
-
+  
   const handleSave = () => {
     const hours = parseInt(inputValue);
     if (!isNaN(hours)) {
@@ -33,21 +36,23 @@ export default function WorkDay({ date, projectKey }: DayBoxProps) {
     }
     setIsModalOpen(false);
   };
-
+  
+  console.log("isWeekendDay", isWeekendDay,date,"date");
   return (
     <>
-      <div
-        className="w-10 h-10 flex items-center justify-center border border-gray-300 text-sm bg-white cursor-pointer hover:bg-gray-100"
-        onClick={openModal}
-      >
+     <div
+        className={`w-10 h-10 flex items-center justify-center border border-gray-300 text-sm cursor-pointer  ${
+          isWeekendDay== true ? "bg-gray-100" : "bg-white hover:bg-gray-100"
+        }`}>
         {currentValue || ""}
+        
       </div>
 
       <Modal
         isOpen={isModalOpen}
         onClose={handleClose}
         title="Sheno oret e punes"
-        footer={<Button onClick={handleSave}>Save</Button>}
+        footer={<Button onClick={handleSave} className="cursor-pointer">Ruaj</Button>}
       >
         <div className="flex flex-col gap-4">
           <input

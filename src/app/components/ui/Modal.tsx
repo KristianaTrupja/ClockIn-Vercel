@@ -54,7 +54,7 @@ export function Modal({
           >
             {!hideCloseButton && (
               <button
-                className="absolute right-4 top-4 rounded-md p-1 text-gray-500 hover:text-black"
+                className="absolute right-4 top-4 rounded-md p-1 text-gray-500 hover:text-black cursor-pointer"
                 onClick={onClose}
                 aria-label="Close modal"
               >

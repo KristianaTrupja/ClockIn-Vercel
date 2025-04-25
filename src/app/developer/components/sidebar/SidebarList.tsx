@@ -11,7 +11,7 @@ export default function SidebarList({ sidebarProjects }: SidebarListProps) {
   }
 
   return (
-    <div className="min-h-[600px] overflow-auto">
+    <div className="min-h-[600px] overflow-auto mt-10">
       {sidebarProjects.map(({ company, projects }) => (
         <SidebarItem key={company} company={company} projects={projects} />
       ))}
