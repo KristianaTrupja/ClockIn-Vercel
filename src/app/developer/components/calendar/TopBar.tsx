@@ -18,7 +18,7 @@ export default function TopBar() {
         return (
           <div
             key={day}
-            className={`border-[1px] border-gray-300 w-10 h-10 flex justify-center items-center text-black font-semibold ${weekendClass}`}
+            className={`border-[1px] border-gray-300 w-10 h-11 flex justify-center items-center text-black font-semibold ${weekendClass}`}
           >
             {day}
           </div>

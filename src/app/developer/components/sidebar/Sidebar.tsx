@@ -2,22 +2,19 @@
 
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { fetchProjects} from "@/app/lib/api/projects";
+import { fetchProjects, ProjectData } from "@/app/lib/api/projects";
 import SidebarHeader from "./SidebarHeader";
 import SidebarList from "./SidebarList";
 import ProjectModal from "./ProjectModal";
+import { useProjects } from "@/app/context/ProjectContext";
 
-type ProjectData = {
-  company: string;
-  projects: string[];
-};
 export default function Sidebar() {
+  const { setSidebarProjects, sidebarProjects } = useProjects();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [formattedDate, setFormattedDate] = useState("");
   const [projectsData, setProjectsData] = useState<ProjectData[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProjects, setSelectedProjects] = useState<string[]>([]);
-  const [sidebarProjects, setSidebarProjects] = useState<ProjectData[]>([]);
 
   useEffect(() => {
     const formatted = currentDate.toLocaleDateString("sq-AL", {
@@ -31,16 +28,8 @@ export default function Sidebar() {
     fetchProjects().then(setProjectsData);
   }, []);
 
-  const goToPreviousMonth = () => {
-    setCurrentDate((prev) => new Date(prev.setMonth(prev.getMonth() - 1)));
-  };
-
-  const goToNextMonth = () => {
-    setCurrentDate((prev) => new Date(prev.setMonth(prev.getMonth() + 1)));
-  };
-
-  const toggleProjectSelection = (company: string, project: string) => {
-    const key = `${company}-${project}`;
+  const toggleProjectSelection = (company: string, projectKey: string) => {
+    const key = `${company}-${projectKey}`;
     setSelectedProjects((prev) =>
       prev.includes(key) ? prev.filter((p) => p !== key) : [...prev, key]
     );
@@ -51,32 +40,39 @@ export default function Sidebar() {
 
     projectsData.forEach(({ company, projects }) => {
       const filtered = projects.filter((p) =>
-        selectedProjects.includes(`${company}-${p}`)
+        selectedProjects.includes(`${company}-${p.projectKey}`)
       );
+
       if (filtered.length > 0) {
         updatedSidebarProjects.push({ company, projects: filtered });
       }
     });
 
-    setSidebarProjects((prev) => {
-      const merged: { [company: string]: Set<string> } = {};
+    const merged: { [company: string]: Map<string, string> } = {};
 
-      prev.forEach(({ company, projects }) => {
-        if (!merged[company]) merged[company] = new Set();
-        projects.forEach((p) => merged[company].add(p));
-      });
-
-      updatedSidebarProjects.forEach(({ company, projects }) => {
-        if (!merged[company]) merged[company] = new Set();
-        projects.forEach((p) => merged[company].add(p));
-      });
-
-      return Object.entries(merged).map(([company, projectsSet]) => ({
-        company,
-        projects: Array.from(projectsSet),
-      }));
+    // Merge existing projects
+    sidebarProjects.forEach(({ company, projects }) => {
+      if (!merged[company]) merged[company] = new Map();
+      projects.forEach((p) => merged[company].set(p.projectKey, p.title));
     });
- 
+
+    // Merge new selected ones
+    updatedSidebarProjects.forEach(({ company, projects }) => {
+      if (!merged[company]) merged[company] = new Map();
+      projects.forEach((p) => merged[company].set(p.projectKey, p.title));
+    });
+
+    const mergedProjects: ProjectData[] = Object.entries(merged).map(
+      ([company, map]) => ({
+        company,
+        projects: Array.from(map.entries()).map(([projectKey, title]) => ({
+          title,
+          projectKey,
+        })),
+      })
+    );
+
+    setSidebarProjects(mergedProjects);
     setSelectedProjects([]);
     setIsModalOpen(false);
   };

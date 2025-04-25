@@ -2,7 +2,10 @@ import { CircleArrowDown } from "lucide-react";
 
 interface SidebarItemProps {
   company: string;
-  projects: string[];
+  projects: {
+    title: string;
+    projectKey: string;
+  }[];
 }
 
 export default function SidebarItem({ company, projects }: SidebarItemProps) {
@@ -14,10 +17,10 @@ export default function SidebarItem({ company, projects }: SidebarItemProps) {
       <ul>
         {projects.map((project) => (
           <li
-            key={project}
+            key={project.projectKey}
             className="bg-[#6C99CB] p-2 text-white pl-5 border-b-[1px] border-[#244B77]"
           >
-            {project}
+            {project.title}
           </li>
         ))}
       </ul>

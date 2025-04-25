@@ -9,7 +9,7 @@ export default function DayBox({ date }: { date: string }) {
   };
 
   return (
-    <div className="w-10 h-11 flex justify-center items-center border-[1px] border-gray-300">
+    <div className="w-10 h-10 flex justify-center items-center border-[1px] border-gray-300">
       {Object.entries(workHours[date] || {}).map(([projectKey, hours]) => (
         <div key={projectKey}>
           <span>{projectKey}</span>

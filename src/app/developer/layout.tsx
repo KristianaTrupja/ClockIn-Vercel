@@ -1,4 +1,5 @@
 import { CalendarProvider } from "../context/CalendarContext";
+import { ProjectProvider } from "../context/ProjectContext";
 import { WorkHoursProvider } from "../context/WorkHoursContext";
 import Sidebar from "./components/sidebar/Sidebar";
 
@@ -7,6 +8,7 @@ export default function DashboardLayout({ children }:{children: React.ReactNode}
   return (
     <WorkHoursProvider>
     <CalendarProvider>
+    <ProjectProvider>
     <section
       className="2xl:mx-20 mt-11 min-h-screen"
       style={{ fontFamily: "var(--font-anek-bangla)" }}
@@ -26,6 +28,7 @@ export default function DashboardLayout({ children }:{children: React.ReactNode}
       <main className="ml-64">{children}</main>
       
     </section>
+    </ProjectProvider>
     </CalendarProvider>
     </WorkHoursProvider>
   );
