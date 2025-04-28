@@ -1,3 +1,4 @@
+
 "use client";
 
 import { createContext, useContext, useState } from "react";
@@ -13,7 +14,7 @@ const CalendarContext = createContext<CalendarContextProps | undefined>(undefine
 
 export const CalendarProvider = ({ children }: { children: React.ReactNode }) => {
   const today = new Date();
-  const [month, setMonth] = useState(today.getMonth()); 
+  const [month, setMonth] = useState(today.getMonth()); // 0-11
   const [year, setYear] = useState(today.getFullYear());
 
   const goToPreviousMonth = () => {

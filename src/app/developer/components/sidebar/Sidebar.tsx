@@ -7,6 +7,7 @@ import SidebarHeader from "./SidebarHeader";
 import SidebarList from "./SidebarList";
 import ProjectModal from "./ProjectModal";
 import { useProjects } from "@/app/context/ProjectContext";
+import { useWorkHours } from "@/app/context/WorkHoursContext";
 
 export default function Sidebar() {
   const { setSidebarProjects, sidebarProjects } = useProjects();
@@ -15,6 +16,8 @@ export default function Sidebar() {
   const [projectsData, setProjectsData] = useState<ProjectData[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProjects, setSelectedProjects] = useState<string[]>([]);
+  const { workHours} = useWorkHours();
+  console.log(workHours)
 
   useEffect(() => {
     const formatted = currentDate.toLocaleDateString("sq-AL", {

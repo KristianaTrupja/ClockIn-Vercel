@@ -14,23 +14,23 @@ export const fetchProjects = async (): Promise<ProjectData[]> => {
     {
       company: "Canvas",
       projects: [
-        { title: "Website", projectKey: "11" },
-        { title: "Study App", projectKey: "22" },
-        { title: "Nivea", projectKey: "225" },
-        { title: "Eucerin", projectKey: "222" },
-        { title: "Faber Castel", projectKey: "2225" },
+        { title: "Website", projectKey: "PID-11" },
+        { title: "Study App", projectKey: "PID-22" },
+        { title: "Nivea", projectKey: "PID-225" },
+        { title: "Eucerin", projectKey: "PID-222" },
+        { title: "Faber Castel", projectKey: "PID-2225" },
       ],
     },
     {
       company: "Dela-tech",
       projects: [
-        { title: "ClockIn", projectKey: "33" },
+        { title: "ClockIn", projectKey: "PID-33" },
       ],
     },
     {
       company: "Omegaventus",
       projects: [
-        { title: "Website", projectKey: "44" },
+        { title: "Website", projectKey: "PID-44" },
       ],
     },
   ]);

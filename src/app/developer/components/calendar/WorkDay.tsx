@@ -13,9 +13,8 @@ type DayBoxProps = {
 
 export default function WorkDay({ date, projectKey }: DayBoxProps) {
   const { month, year } = useCalendar();
-  console.log(date,"date" ,month, year)
   const day = parseInt(date.split("-")[2]); // extract day from YYYY-MM-DD
-const isWeekendDay = isWeekend(year, month, day);
+  const isWeekendDay = isWeekend(year, month, day);
   const { workHours, setWorkHoursForProject } = useWorkHours();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [inputValue, setInputValue] = useState<string>("");
