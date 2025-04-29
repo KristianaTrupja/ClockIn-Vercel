@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { fetchProjects, ProjectData } from "@/app/lib/api/projects";
 import SidebarHeader from "./SidebarHeader";
@@ -16,9 +16,34 @@ export default function Sidebar() {
   const [projectsData, setProjectsData] = useState<ProjectData[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProjects, setSelectedProjects] = useState<string[]>([]);
-  const { workHours} = useWorkHours();
-  console.log(workHours)
+  const { workHours } = useWorkHours();
 
+  // Key based on current month and year
+  const getStorageKey = useCallback((date: Date) => {
+    return `sidebarProjects-${date.getFullYear()}-${date.getMonth() + 1}`;
+  }, []);
+
+  useEffect(() => {
+    const key = getStorageKey(currentDate);
+    const saved = localStorage.getItem(key);
+    
+    if (saved) {
+      const parsedProjects = JSON.parse(saved);
+      setSidebarProjects(parsedProjects);
+    } else {
+      // Important: clear the sidebar if no saved projects exist for this month
+      setSidebarProjects([]);
+    }
+  }, [currentDate, getStorageKey, setSidebarProjects]);
+  
+
+  // Save sidebarProjects to localStorage whenever they change
+  useEffect(() => {
+    const key = getStorageKey(currentDate);
+    localStorage.setItem(key, JSON.stringify(sidebarProjects));
+  }, [sidebarProjects, currentDate, getStorageKey]);
+
+  // Format date for display
   useEffect(() => {
     const formatted = currentDate.toLocaleDateString("sq-AL", {
       month: "long",
@@ -27,6 +52,7 @@ export default function Sidebar() {
     setFormattedDate(formatted);
   }, [currentDate]);
 
+  // Fetch all possible projects initially
   useEffect(() => {
     fetchProjects().then(setProjectsData);
   }, []);
@@ -59,7 +85,7 @@ export default function Sidebar() {
       projects.forEach((p) => merged[company].set(p.projectKey, p.title));
     });
 
-    // Merge new selected ones
+    // Merge newly selected projects
     updatedSidebarProjects.forEach(({ company, projects }) => {
       if (!merged[company]) merged[company] = new Map();
       projects.forEach((p) => merged[company].set(p.projectKey, p.title));
