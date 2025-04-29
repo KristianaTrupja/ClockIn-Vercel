@@ -1,62 +1,46 @@
-"use client";
+'use client';
 
-import { useEffect, useState, useCallback } from "react";
-import { Button } from "@/components/ui/button";
+import { useState, useCallback, useEffect } from "react";
 import { fetchProjects, ProjectData } from "@/app/lib/api/projects";
-import SidebarHeader from "./SidebarHeader";
-import SidebarList from "./SidebarList";
-import ProjectModal from "./ProjectModal";
 import { useProjects } from "@/app/context/ProjectContext";
-import { useWorkHours } from "@/app/context/WorkHoursContext";
+import { useCalendar } from "@/app/context/CalendarContext";
+import SidebarContent from "./SidebarContent";
+import SidebarHeader from "./SidebarHeader";
+import ProjectModalContainer from "./ProjectModalContainer";
 
 export default function Sidebar() {
   const { setSidebarProjects, sidebarProjects } = useProjects();
-  const [currentDate, setCurrentDate] = useState(new Date());
-  const [formattedDate, setFormattedDate] = useState("");
+  const { month, year } = useCalendar();
   const [projectsData, setProjectsData] = useState<ProjectData[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProjects, setSelectedProjects] = useState<string[]>([]);
-  const { workHours } = useWorkHours();
 
-  // Key based on current month and year
-  const getStorageKey = useCallback((date: Date) => {
-    return `sidebarProjects-${date.getFullYear()}-${date.getMonth() + 1}`;
-  }, []);
-
-  useEffect(() => {
-    const key = getStorageKey(currentDate);
-    const saved = localStorage.getItem(key);
-    
-    if (saved) {
-      const parsedProjects = JSON.parse(saved);
-      setSidebarProjects(parsedProjects);
-    } else {
-      // Important: clear the sidebar if no saved projects exist for this month
-      setSidebarProjects([]);
-    }
-  }, [currentDate, getStorageKey, setSidebarProjects]);
-  
-
-  // Save sidebarProjects to localStorage whenever they change
-  useEffect(() => {
-    const key = getStorageKey(currentDate);
-    localStorage.setItem(key, JSON.stringify(sidebarProjects));
-  }, [sidebarProjects, currentDate, getStorageKey]);
-
-  // Format date for display
-  useEffect(() => {
-    const formatted = currentDate.toLocaleDateString("sq-AL", {
-      month: "long",
-      year: "numeric",
-    });
-    setFormattedDate(formatted);
-  }, [currentDate]);
-
-  // Fetch all possible projects initially
+  // Fetch projects on mount
   useEffect(() => {
     fetchProjects().then(setProjectsData);
   }, []);
 
+  // Helper for consistent localStorage key using month and year
+  const getStorageKey = useCallback(() => {
+    const keyDate = `${year}-${month}`;
+    return `sidebar-projects-${keyDate}`;
+  }, [year, month]);
+
+  // Load saved projects from localStorage if not already in context
+  useEffect(() => {
+    const key = getStorageKey();
+    const saved = localStorage.getItem(key);
+    const parsed = saved ? JSON.parse(saved) : [];
+
+    const isEqual =
+      JSON.stringify(parsed) === JSON.stringify(sidebarProjects);
+
+    if (!isEqual) {
+      setSidebarProjects(parsed);
+    }
+  }, [getStorageKey, sidebarProjects]);
+
+  // Handle project selection toggle
   const toggleProjectSelection = (company: string, projectKey: string) => {
     const key = `${company}-${projectKey}`;
     setSelectedProjects((prev) =>
@@ -64,6 +48,7 @@ export default function Sidebar() {
     );
   };
 
+  // Handle submit for selected projects
   const handleSubmit = () => {
     const updatedSidebarProjects: ProjectData[] = [];
 
@@ -79,13 +64,11 @@ export default function Sidebar() {
 
     const merged: { [company: string]: Map<string, string> } = {};
 
-    // Merge existing projects
     sidebarProjects.forEach(({ company, projects }) => {
       if (!merged[company]) merged[company] = new Map();
       projects.forEach((p) => merged[company].set(p.projectKey, p.title));
     });
 
-    // Merge newly selected projects
     updatedSidebarProjects.forEach(({ company, projects }) => {
       if (!merged[company]) merged[company] = new Map();
       projects.forEach((p) => merged[company].set(p.projectKey, p.title));
@@ -101,6 +84,9 @@ export default function Sidebar() {
       })
     );
 
+    const key = getStorageKey();
+    localStorage.setItem(key, JSON.stringify(mergedProjects));
+
     setSidebarProjects(mergedProjects);
     setSelectedProjects([]);
     setIsModalOpen(false);
@@ -109,23 +95,18 @@ export default function Sidebar() {
   return (
     <>
       <SidebarHeader />
-      <aside className="mt-40 absolute top-0 w-64 min-h-[80vh] bg-[#E3F0FF] shadow-md border-2 border-[#244B77] flex flex-col justify-between align-center">
-        <SidebarList sidebarProjects={sidebarProjects} />
-        <Button className="w-fit m-auto" onClick={() => setIsModalOpen(true)}>
-          Shto të ri
-        </Button>
-        <ProjectModal
-          isOpen={isModalOpen}
-          onClose={() => {
-            setSelectedProjects([]);
-            setIsModalOpen(false);
-          }}
-          projectsData={projectsData}
-          selectedProjects={selectedProjects}
-          toggleProjectSelection={toggleProjectSelection}
-          handleSubmit={handleSubmit}
-        />
-      </aside>
+      <SidebarContent sidebarProjects={sidebarProjects} openModal={() => setIsModalOpen(true)} />
+      <ProjectModalContainer
+        isModalOpen={isModalOpen}
+        closeModal={() => {
+          setSelectedProjects([]);
+          setIsModalOpen(false);
+        }}
+        projectsData={projectsData}
+        selectedProjects={selectedProjects}
+        toggleSelection={toggleProjectSelection}
+        handleSubmit={handleSubmit}
+      />
     </>
   );
 }

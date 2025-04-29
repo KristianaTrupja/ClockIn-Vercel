@@ -6,8 +6,6 @@ import { useWorkHours } from "./WorkHoursContext";
 type ProjectContextType = {
   sidebarProjects: ProjectData[];
   setSidebarProjects: (projects: ProjectData[]) => void;
-  monthProjects: ProjectData[];
-  setMonthProjects: (projects: ProjectData[]) => void;
   allProjectKeys: string[];
 };
 
@@ -15,7 +13,6 @@ const ProjectContext = createContext<ProjectContextType | undefined>(undefined);
 
 export const ProjectProvider = ({ children }: { children: ReactNode }) => {
   const [sidebarProjects, setSidebarProjects] = useState<ProjectData[]>([]);
-  const [monthProjects, setMonthProjects] = useState<ProjectData[]>([]); // Assuming this is used somewhere else
 
   // Extract unique projectKeys from sidebarProjects
   const allProjectKeys = sidebarProjects.flatMap((p) =>
@@ -23,7 +20,13 @@ export const ProjectProvider = ({ children }: { children: ReactNode }) => {
   );
   
   return (
-    <ProjectContext.Provider value={{ sidebarProjects, setSidebarProjects, monthProjects, setMonthProjects, allProjectKeys }}>
+    <ProjectContext.Provider
+      value={{
+        sidebarProjects,
+        setSidebarProjects,
+        allProjectKeys,
+      }}
+    >
       {children}
     </ProjectContext.Provider>
   );
