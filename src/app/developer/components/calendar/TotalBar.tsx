@@ -1,38 +1,52 @@
 "use client";
+
 import { useCalendar } from "@/app/context/CalendarContext";
 import { useProjects } from "@/app/context/ProjectContext";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
+import type { ProjectData } from "@/app/lib/api/projects";
 
 export default function TotalBar() {
   const { month, year } = useCalendar();
   const { sidebarProjects } = useProjects();
+  const [parsedProjects, setParsedProjects] = useState<ProjectData[] | null>(
+    null
+  );
 
-const getStorageKey = useCallback(() => {
+  const getStorageKey = useCallback(() => {
     const keyDate = `${year}-${month}`;
     return `sidebar-projects-${keyDate}`;
   }, [year, month]);
 
-  const key = getStorageKey();
-  const saved = localStorage.getItem(key);
-  const parsed = saved ? JSON.parse(saved) : null;
-  console.log(parsed)
+  useEffect(() => {
+    const key = getStorageKey();
+    const saved = localStorage.getItem(key);
+    const parsed = saved ? (JSON.parse(saved) as ProjectData[]) : null;
+    setParsedProjects(parsed);
+  }, [getStorageKey]);
+
   return (
-    <div className="flex flex-col bg-gray-100 overflow-auto mt-2 items-center h-[76vh]">
-       <div  className={`border-[1px] border-gray-300 w-10 h-11 flex justify-center items-center text-black font-semibold`}
-          >Total</div>
-      {parsed.map((projects,index) => {
-        return (
-          <>
-          <div className="flex items-center h-10 w-full px-2 font-semibold bg-gray-200 border border-gray-300" />
-          {projects.projects.map((proj, projectIndex) => (
-            <div className="flex h-10 items-center" key={`${index}-${projectIndex}`}>
-              3
-            </div>
-          ))}
-          {/* Example of a workday component */}
-          </>
-        );
-      })}
+    <div className="flex flex-col justify-between h-[76vh] border-[1px] border-gray-300 mt-2 bg-blue-50">
+      <div className="flex flex-col overflow-auto items-center ">
+        <div className="border-[1px] border-gray-300 w-full h-11 flex justify-center items-center text-black font-semibold p-2">
+          Total
+        </div>
+        {parsedProjects?.map((projects, index) => (
+          <div key={index} className="w-full">
+            <div className="flex items-center h-10 w-full px-2 font-semibold bg-gray-200" />
+            {projects.projects.map((proj, projectIndex) => (
+              <div
+                className="flex h-10 items-center justify-center border-b-[1px] border-gray-300"
+                key={`${index}-${projectIndex}`}
+              >
+                5
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+      <div className="border-[1px] border-gray-300 w-full h-11 flex justify-center items-center text-black font-semibold">
+        100
+      </div>
     </div>
   );
 }
