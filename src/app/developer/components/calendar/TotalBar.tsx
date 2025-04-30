@@ -3,6 +3,7 @@ import { useCalendar } from "@/app/context/CalendarContext";
 import { useWorkHours } from "@/app/context/WorkHoursContext";
 import { ProjectData } from "@/app/lib/api/projects";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { Delete } from "lucide-react";
 
 export default function TotalBar() {
   const { month, year } = useCalendar();
@@ -33,6 +34,23 @@ export default function TotalBar() {
     }, 0);
   }, [parsedProjects, getTotalHoursForProjectInMonth, month, year]);
 
+  // Function to remove project from parsedProjects and update localStorage
+  const removeProject = (projectKey: string) => {
+    const updatedProjects = parsedProjects?.map((group) => {
+      return {
+        ...group,
+        projects: group.projects.filter((proj) => proj.projectKey !== projectKey),
+      };
+    }).filter((group) => group.projects.length > 0); // Remove groups with no projects
+
+    setParsedProjects(updatedProjects || []);
+    const key = getStorageKey();
+    localStorage.setItem(key, JSON.stringify(updatedProjects));
+
+    // Refresh the page to reflect changes
+    window.location.reload();
+  };
+
   return (
     <div className="flex flex-col justify-between h-[76vh] border-[1px] border-gray-300 mt-2 bg-blue-50">
       <div className="flex flex-col overflow-auto items-center">
@@ -46,9 +64,14 @@ export default function TotalBar() {
               const total = getTotalHoursForProjectInMonth(proj.projectKey, month + 1, year);
               return (
                 <div
-                  className="flex h-10 items-center justify-center border-b-[1px] border-gray-300"
-                  key={`${index}-${projectIndex}`}>
-                  {total}
+                  className="flex h-10 gap-1 items-center justify-center border-b-[1px] border-gray-300 relative"
+                  key={`${index}-${projectIndex}`}
+                >
+                  <div>{total}</div>
+                  <Delete
+                    className="w-5 h-5 text-red-500 cursor-pointer"
+                    onClick={() => removeProject(proj.projectKey)} // Call removeProject on click
+                  />
                 </div>
               );
             })}
