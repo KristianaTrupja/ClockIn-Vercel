@@ -11,7 +11,7 @@ interface SidebarItemProps {
 export default function SidebarItem({ company, projects }: SidebarItemProps) {
   return (
     <div>
-      <h3 className="bg-[#244B77] w-full p-[7px] text-white flex items-center justify-between border-b border-t border-[#244B77]">
+      <h3 className="bg-[#244B77] w-full p-[7.4px] text-white flex items-center justify-between border-b border-t border-[#244B77]">
         {company} <CircleArrowDown />
       </h3>
       <ul>

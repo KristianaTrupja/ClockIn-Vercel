@@ -59,12 +59,12 @@ export default function TotalBar() {
         </div>
         {parsedProjects?.map((projects, index) => (
           <div key={index} className="w-full">
-            <div className="flex items-center h-10 w-full px-2 font-semibold bg-gray-200" />
+            <div className="project-field__name flex items-center w-full p-[19px] font-semibold bg-gray-200 border-b-[1px]" />
             {projects.projects.map((proj, projectIndex) => {
               const total = getTotalHoursForProjectInMonth(proj.projectKey, month + 1, year);
               return (
                 <div
-                  className="flex h-10 gap-1 items-center justify-between border-b-[1px] border-gray-300 relative px-2"
+                  className="total-field flex h-10 gap-1 items-center justify-between border-t-[1px] border-gray-300 relative p-[20px]"
                   key={`${index}-${projectIndex}`}
                 >
                   <div>{total}</div>
