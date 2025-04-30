@@ -11,7 +11,8 @@ export default function SidebarList({ sidebarProjects }: SidebarListProps) {
   }
 
   return (
-    <div className="min-h-[600px] overflow-auto mt-10">
+    <div className="min-h-[600px] overflow-auto">
+      <div className="py-2 pl-3 flex justify-center font-semibold text-[#244B77]">Projektet</div>
       {sidebarProjects.map(({ company, projects }) => (
         <SidebarItem key={company} company={company} projects={projects} />
       ))}
