@@ -13,16 +13,20 @@ type DayBoxProps = {
 
 export default function WorkDay({ date, projectKey }: DayBoxProps) {
   const { month, year } = useCalendar();
-  const day = parseInt(date.split("-")[2]); // extract day from YYYY-MM-DD
+  const day = parseInt(date.split("-")[2]);
   const isWeekendDay = isWeekend(year, month, day);
   const { workHours, setWorkHoursForProject } = useWorkHours();
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [inputValue, setInputValue] = useState<string>("");
   const [textareaValue, setTextAreaValue] = useState<string>("");
+
   const currentDayData = workHours[date] || {};
-  const currentValue = currentDayData[projectKey] ?? "";
+  const currentValue = currentDayData[projectKey] ?? { hours: "", note: "" };
+
   const openModal = () => {
-    setInputValue(currentValue.toString());
+    setInputValue(currentValue?.hours?.toString() || "");
+    setTextAreaValue(currentValue?.note || "");
     setIsModalOpen(true);
   };
 
@@ -38,17 +42,22 @@ export default function WorkDay({ date, projectKey }: DayBoxProps) {
     }
     setIsModalOpen(false);
   };
+
   return (
     <>
       <div
         onClick={openModal}
-        className={`w-10 h-10 flex items-center justify-center border border-gray-300 text-sm cursor-pointer  ${
-          isWeekendDay == true ? "bg-gray-100" : "bg-white hover:bg-gray-100"
+        className={`relative w-10 h-10 flex items-center justify-center border border-gray-300 text-sm cursor-pointer ${
+          isWeekendDay ? "bg-gray-100" : "bg-white hover:bg-gray-100"
         }`}
       >
-        {currentValue.hours || ""}
+        {currentValue?.hours || ""}
+        
+        {currentValue?.note && (
+          <div className="absolute bottom-0 right-0 w-0 h-0 border-b-[10px] border-l-[10px] border-b-green-500 border-l-transparent" />
+        )}
       </div>
-
+  
       <Modal
         isOpen={isModalOpen}
         onClose={handleClose}
@@ -78,4 +87,5 @@ export default function WorkDay({ date, projectKey }: DayBoxProps) {
       </Modal>
     </>
   );
+  
 }
