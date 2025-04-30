@@ -71,7 +71,6 @@ export function WorkHoursProvider({ children }: { children: ReactNode }) {
     });
   
     const monthWorkHours = Object.fromEntries(filteredEntries);
-  
     for (const day of Object.values(monthWorkHours)) {
       if (day[projectKey]?.hours) {
         total += day[projectKey].hours;

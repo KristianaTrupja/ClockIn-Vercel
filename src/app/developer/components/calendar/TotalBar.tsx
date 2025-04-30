@@ -1,9 +1,8 @@
-"use client"
+"use client";
 import { useCalendar } from "@/app/context/CalendarContext";
-import { useProjects } from "@/app/context/ProjectContext";
 import { useWorkHours } from "@/app/context/WorkHoursContext";
 import { ProjectData } from "@/app/lib/api/projects";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 export default function TotalBar() {
   const { month, year } = useCalendar();
@@ -21,6 +20,19 @@ export default function TotalBar() {
     const parsed = saved ? (JSON.parse(saved) as ProjectData[]) : null;
     setParsedProjects(parsed);
   }, [getStorageKey]);
+
+  const sum = useMemo(() => {
+    if (!parsedProjects) return 0;
+    return parsedProjects.reduce((acc, group) => {
+      return (
+        acc +
+        group.projects.reduce((subAcc, proj) => {
+          return subAcc + getTotalHoursForProjectInMonth(proj.projectKey, month + 1, year);
+        }, 0)
+      );
+    }, 0);
+  }, [parsedProjects, getTotalHoursForProjectInMonth, month, year]);
+
   return (
     <div className="flex flex-col justify-between h-[76vh] border-[1px] border-gray-300 mt-2 bg-blue-50">
       <div className="flex flex-col overflow-auto items-center">
@@ -31,12 +43,11 @@ export default function TotalBar() {
           <div key={index} className="w-full">
             <div className="flex items-center h-10 w-full px-2 font-semibold bg-gray-200" />
             {projects.projects.map((proj, projectIndex) => {
-              const total = getTotalHoursForProjectInMonth(proj.projectKey, month+1, year);
+              const total = getTotalHoursForProjectInMonth(proj.projectKey, month + 1, year);
               return (
                 <div
                   className="flex h-10 items-center justify-center border-b-[1px] border-gray-300"
-                  key={`${index}-${projectIndex}`}
-                >
+                  key={`${index}-${projectIndex}`}>
                   {total}
                 </div>
               );
@@ -45,7 +56,7 @@ export default function TotalBar() {
         ))}
       </div>
       <div className="border-[1px] border-gray-300 w-full h-11 flex justify-center items-center text-black font-semibold">
-        100
+        {sum}
       </div>
     </div>
   );

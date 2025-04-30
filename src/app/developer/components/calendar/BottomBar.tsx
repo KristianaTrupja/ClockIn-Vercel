@@ -14,7 +14,7 @@ export default function BottomBar() {
     setDays(daysArray);
   }, [month, year]);
   return (
-    <div className="flex overflow-auto items-center gap-1">
+    <div className="flex items-center gap-1">
       {days.map((day) => {
         const weekendClass = isWeekend(year, month, parseInt(day))
           ? "border-red-400"
