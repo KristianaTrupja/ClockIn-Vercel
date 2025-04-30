@@ -52,9 +52,9 @@ export default function TotalBar() {
   };
 
   return (
-    <div className="flex flex-col justify-between h-[76vh] border-[1px] border-gray-300 mt-2 bg-blue-50">
+    <div className="flex flex-col justify-between h-[76vh] border-[1px] border-gray-300 bg-blue-50">
       <div className="flex flex-col overflow-auto items-center">
-        <div className="border-[1px] border-gray-300 w-full h-11 flex justify-center items-center text-black font-semibold p-2">
+        <div className="border-gray-300 w-full border-b h-10 flex justify-center items-center text-black font-semibold p-2">
           Total
         </div>
         {parsedProjects?.map((projects, index) => (
@@ -64,7 +64,7 @@ export default function TotalBar() {
               const total = getTotalHoursForProjectInMonth(proj.projectKey, month + 1, year);
               return (
                 <div
-                  className="flex h-10 gap-1 items-center justify-between border-b-[1px] border-gray-300 relative mx-2"
+                  className="flex h-10 gap-1 items-center justify-between border-b-[1px] border-gray-300 relative px-2"
                   key={`${index}-${projectIndex}`}
                 >
                   <div>{total}</div>
@@ -78,7 +78,7 @@ export default function TotalBar() {
           </div>
         ))}
       </div>
-      <div className="border-[1px] border-b-0 border-l-0 border-r-0 border-gray-300 w-full h-11 flex justify-center items-center text-black font-semibold">
+      <div className="border-[1px] border-b-0 border-l-0 border-r-0 border-gray-300 w-full h-10 flex justify-center items-center text-black font-semibold">
         {sum}
       </div>
     </div>

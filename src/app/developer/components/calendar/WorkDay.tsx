@@ -60,7 +60,7 @@ export default function WorkDay({ date, projectKey }: DayBoxProps) {
       <div
         onClick={openModal}
         title={holidayTitle || ""}
-        className={`relative w-10 h-10 flex items-center justify-center border border-gray-300 text-sm cursor-pointer 
+        className={`relative w-10 h-10 flex items-center justify-center text-sm cursor-pointer odd:border-l odd:border-r
           ${isWeekendDay ? "bg-gray-100" : "bg-white hover:bg-gray-100"}
           ${isHolidayDay ? "bg-green-100" : ""}
         `}

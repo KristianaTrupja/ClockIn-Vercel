@@ -25,7 +25,7 @@ export default function DashboardLayout({ children }:{children: React.ReactNode}
         </h4>
       </div>
       <Sidebar/>
-      <main className="ml-64 2xl:w-fit">{children}</main>
+      <main className="ml-64 2xl:w-fit min-h-[80vh] mt-2">{children}</main>
       
     </section>
     </CalendarProvider>

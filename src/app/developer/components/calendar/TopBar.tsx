@@ -12,13 +12,13 @@ export default function TopBar() {
   }, [month, year]);
 
   return (
-    <div className="flex bg-gray-100 overflow-auto mt-2 items-center">
+    <div className="flex bg-gray-100 overflow-auto items-center border-t-[1px]">
       {days.map((day) => {
         const weekendClass = isWeekend(year,month,parseInt(day)) ? "bg-gray-300" : "bg-none";
         return (
           <div
             key={day}
-            className={`border-[1px] border-gray-300 w-10 h-11 flex justify-center items-center text-black font-semibold ${weekendClass}`}
+            className={`border-gray-300 w-10 h-10 flex justify-center items-center text-black border-l font-semibold ${weekendClass}`}
           >
             {day}
           </div>
