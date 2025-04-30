@@ -1,4 +1,6 @@
-'use client'
+// Sidebar.tsx
+"use client";
+
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 
@@ -15,7 +17,7 @@ export default function Sidebar() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const currentTab = searchParams.get("tab") || "raport"; 
+  const currentTab = searchParams.get("tab") || "raport";
 
   const handleClick = (tab: string) => {
     router.push(`${pathname}?tab=${tab}`);

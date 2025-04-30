@@ -1,7 +1,9 @@
+// app/admin/layout.tsx or app/dashboard/layout.tsx (wherever you use DashboardLayout)
+import { Suspense } from "react";
 import Sidebar from "./layout/Sidebar";
 import TopNavBar from "./layout/TopNavBar";
 
-export default function DashboardLayout({ children }:{children: React.ReactNode}) {
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
     <section
       className="2xl:mx-40 mt-11 min-h-screen"
@@ -19,9 +21,10 @@ export default function DashboardLayout({ children }:{children: React.ReactNode}
         </h4>
       </div>
       <TopNavBar />
-      <Sidebar />
+      <Suspense fallback={<div>Loading sidebar...</div>}>
+        <Sidebar />
+      </Suspense>
       <main className="ml-64">{children}</main>
-      
     </section>
   );
 }
