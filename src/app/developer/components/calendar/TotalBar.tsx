@@ -78,7 +78,7 @@ export default function TotalBar() {
           </div>
         ))}
       </div>
-      <div className="border-[1px] border-gray-300 w-full h-11 flex justify-center items-center text-black font-semibold">
+      <div className="border-[1px] border-b-0 border-l-0 border-r-0 border-gray-300 w-full h-11 flex justify-center items-center text-black font-semibold">
         {sum}
       </div>
     </div>
