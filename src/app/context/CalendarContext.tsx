@@ -37,7 +37,7 @@ export const CalendarProvider = ({ children }: { children: React.ReactNode }) =>
 
   return (
     <CalendarContext.Provider
-      value={{ month, year, goToPreviousMonth, goToNextMonth }}
+      value={{  month: month, year, goToPreviousMonth, goToNextMonth }}
     >
       {children}
     </CalendarContext.Provider>

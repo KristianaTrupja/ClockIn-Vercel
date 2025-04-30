@@ -13,8 +13,14 @@ type WorkHours = {
 
 type WorkHoursContextType = {
   workHours: WorkHours;
-  setWorkHoursForProject: (date: string, projectKey: string, hours: number, note?: string) => void;
+  setWorkHoursForProject: (
+    date: string,
+    projectKey: string,
+    hours: number,
+    note?: string
+  ) => void;
   getTotalHoursForDay: (date: string) => number;
+  getTotalHoursForProjectInMonth: (projectKey: string, month: number, year: number) => number;
 };
 
 const WorkHoursContext = createContext<WorkHoursContextType | undefined>(undefined);
@@ -50,11 +56,43 @@ export function WorkHoursProvider({ children }: { children: ReactNode }) {
     if (!dayData) return 0;
     return Object.values(dayData).reduce((total, projectEntry) => total + (projectEntry.hours || 0), 0);
   };
+  
+  
+  const getTotalHoursForProjectInMonth = (
+    projectKey: string,
+    month: number,
+    year: number
+  ): number => {
+    let total = 0;
+  
+    const filteredEntries = Object.entries(workHours).filter(([date]) => {
+      const d = new Date(date);
+      return d.getMonth() === month - 1 && d.getFullYear() === year;
+    });
+  
+    const monthWorkHours = Object.fromEntries(filteredEntries);
+  
+    for (const day of Object.values(monthWorkHours)) {
+      if (day[projectKey]?.hours) {
+        total += day[projectKey].hours;
+      }
+    }
+  
+    return total;
+  };
+  
 
   return (
-    <WorkHoursContext.Provider value={{ workHours, setWorkHoursForProject, getTotalHoursForDay }}>
-      {children}
-    </WorkHoursContext.Provider>
+    <WorkHoursContext.Provider
+    value={{
+      workHours,
+      setWorkHoursForProject,
+      getTotalHoursForDay,
+      getTotalHoursForProjectInMonth,
+    }}
+  >
+    {children}
+  </WorkHoursContext.Provider>
   );
 }
 
