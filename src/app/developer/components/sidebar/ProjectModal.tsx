@@ -8,6 +8,7 @@ interface ProjectModalProps {
   onClose: () => void;
   projectsData: ProjectData[];
   selectedProjects: string[];
+  sidebarProjects: ProjectData[];
   toggleProjectSelection: (company: string, project: string) => void;
   handleSubmit: () => void;
 }
@@ -17,9 +18,17 @@ export default function ProjectModal({
   onClose,
   projectsData,
   selectedProjects,
+  sidebarProjects,
   toggleProjectSelection,
   handleSubmit,
 }: ProjectModalProps) {
+  // Create a Set of all existing project keys already in the sidebar
+  const sidebarProjectKeys = new Set(
+    sidebarProjects.flatMap((group) =>
+      group.projects.map((proj) => `${group.company}-${proj.projectKey}`)
+    )
+  );
+
   return (
     <Modal
       isOpen={isOpen}
@@ -34,19 +43,26 @@ export default function ProjectModal({
             <ul className="space-y-1">
               {projects.map((project) => {
                 const key = `${company}-${project.projectKey}`;
+                const isAlreadyInSidebar = sidebarProjectKeys.has(key);
                 const isSelected = selectedProjects.includes(key);
+
                 return (
                   <li
-                  key={project.projectKey}
-                  onClick={() => toggleProjectSelection(company, project.projectKey)}
-                  className={clsx(
-                    "cursor-pointer p-2 rounded",
-                    isSelected ? "bg-[#244B77] text-white" : "bg-gray-100 text-[#244B77]"
-                  )}
-                >
-                  {project.title}
-                </li>
-                
+                    key={project.projectKey}
+                    onClick={() =>
+                      !isAlreadyInSidebar && toggleProjectSelection(company, project.projectKey)
+                    }
+                    className={clsx(
+                      "p-2 rounded",
+                      isAlreadyInSidebar
+                        ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                        : isSelected
+                        ? "bg-[#244B77] text-white cursor-pointer"
+                        : "bg-blue-100 text-[#244B77] cursor-pointer"
+                    )}
+                  >
+                    {project.title}
+                  </li>
                 );
               })}
             </ul>

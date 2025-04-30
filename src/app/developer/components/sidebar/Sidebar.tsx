@@ -90,6 +90,8 @@ export default function Sidebar() {
     setSidebarProjects(mergedProjects);
     setSelectedProjects([]);
     setIsModalOpen(false);
+
+    window.location.reload();
   };
 
   return (
@@ -104,6 +106,7 @@ export default function Sidebar() {
         }}
         projectsData={projectsData}
         selectedProjects={selectedProjects}
+        sidebarProjects={sidebarProjects}
         toggleSelection={toggleProjectSelection}
         handleSubmit={handleSubmit}
       />

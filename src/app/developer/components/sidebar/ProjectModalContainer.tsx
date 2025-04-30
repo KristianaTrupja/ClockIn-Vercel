@@ -6,6 +6,7 @@ export default function ProjectModalContainer({
   closeModal,
   projectsData,
   selectedProjects,
+  sidebarProjects,
   toggleSelection,
   handleSubmit,
 }: any){
@@ -15,6 +16,7 @@ export default function ProjectModalContainer({
           onClose={closeModal}
           projectsData={projectsData}
           selectedProjects={selectedProjects}
+          sidebarProjects={sidebarProjects}
           toggleProjectSelection={toggleSelection}
           handleSubmit={handleSubmit}
         />

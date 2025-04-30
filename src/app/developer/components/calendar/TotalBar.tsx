@@ -64,7 +64,7 @@ export default function TotalBar() {
               const total = getTotalHoursForProjectInMonth(proj.projectKey, month + 1, year);
               return (
                 <div
-                  className="flex h-10 gap-1 items-center justify-center border-b-[1px] border-gray-300 relative"
+                  className="flex h-10 gap-1 items-center justify-between border-b-[1px] border-gray-300 relative mx-2"
                   key={`${index}-${projectIndex}`}
                 >
                   <div>{total}</div>
