@@ -12,3 +12,23 @@ export const getDaysInMonth = (year: number, month: number): string[] => {
     const weekday = date.getDay();
     return weekday === 0 || weekday === 6;
   };
+
+// Parse "DD.MM.YYYY" string into a Date object
+export const parseDateString = (dateString: string): Date => {
+  const [day, month, year] = dateString.split(".");
+  return new Date(Number(year), Number(month) - 1, Number(day));
+};
+
+// Check if a given day is a holiday
+export const isHoliday = (year: number, month: number, day: number, holiday: string): boolean => {
+  const date = new Date(year, month, day);
+  const holidayDate = parseDateString(holiday);
+
+  // Compare only year, month, and date — ignore time
+  return (
+    date.getFullYear() === holidayDate.getFullYear() &&
+    date.getMonth() === holidayDate.getMonth() &&
+    date.getDate() === holidayDate.getDate()
+  );
+};
+

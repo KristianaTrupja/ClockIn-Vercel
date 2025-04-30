@@ -1,10 +1,11 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useWorkHours } from "@/app/context/WorkHoursContext";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/app/components/ui/Modal";
-import { isWeekend } from "@/app/utils/dateUtils";
+import { isHoliday, isWeekend } from "@/app/utils/dateUtils";
 import { useCalendar } from "@/app/context/CalendarContext";
+import { fetchHolidays, HolidayData } from "@/app/lib/api/bankHolidays";
 
 type DayBoxProps = {
   date: string;
@@ -15,8 +16,20 @@ export default function WorkDay({ date, projectKey }: DayBoxProps) {
   const { month, year } = useCalendar();
   const day = parseInt(date.split("-")[2]);
   const isWeekendDay = isWeekend(year, month, day);
-  const { workHours, setWorkHoursForProject } = useWorkHours();
+  const [holidaysData, setHolidaysData] = useState<HolidayData[]>([]);
 
+  useEffect(() => {
+    fetchHolidays().then(setHolidaysData);
+  }, []);
+
+  const holiday = holidaysData.find((h) =>
+    isHoliday(year, month, day, h.date)
+  );
+
+  const isHolidayDay = Boolean(holiday);
+  const holidayTitle = holiday?.title;
+
+  const { workHours, setWorkHoursForProject } = useWorkHours();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [inputValue, setInputValue] = useState<string>("");
   const [textareaValue, setTextAreaValue] = useState<string>("");
@@ -30,9 +43,7 @@ export default function WorkDay({ date, projectKey }: DayBoxProps) {
     setIsModalOpen(true);
   };
 
-  const handleClose = () => {
-    setIsModalOpen(false);
-  };
+  const handleClose = () => setIsModalOpen(false);
 
   const handleSave = () => {
     const hours = parseInt(inputValue);
@@ -47,17 +58,19 @@ export default function WorkDay({ date, projectKey }: DayBoxProps) {
     <>
       <div
         onClick={openModal}
-        className={`relative w-10 h-10 flex items-center justify-center border border-gray-300 text-sm cursor-pointer ${
-          isWeekendDay ? "bg-gray-100" : "bg-white hover:bg-gray-100"
-        }`}
+        title={holidayTitle || ""}
+        className={`relative w-10 h-10 flex items-center justify-center border border-gray-300 text-sm cursor-pointer 
+          ${isWeekendDay ? "bg-gray-100" : "bg-white hover:bg-gray-100"}
+          ${isHolidayDay ? "bg-green-100" : ""}
+        `}
       >
         {currentValue?.hours || ""}
-        
+
         {currentValue?.note && (
           <div className="absolute bottom-0 right-0 w-0 h-0 border-b-[10px] border-l-[10px] border-b-green-500 border-l-transparent" />
         )}
       </div>
-  
+
       <Modal
         isOpen={isModalOpen}
         onClose={handleClose}
@@ -87,5 +100,4 @@ export default function WorkDay({ date, projectKey }: DayBoxProps) {
       </Modal>
     </>
   );
-  
 }
