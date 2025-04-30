@@ -46,13 +46,14 @@ export default function WorkDay({ date, projectKey }: DayBoxProps) {
   const handleClose = () => setIsModalOpen(false);
 
   const handleSave = () => {
-    const hours = parseInt(inputValue);
-    const note = textareaValue;
+    const hours = inputValue.trim() === "" ? 0 : parseInt(inputValue);
+    const note = hours === 0 ? "" : textareaValue;
     if (!isNaN(hours)) {
       setWorkHoursForProject(date, projectKey, hours, note);
     }
     setIsModalOpen(false);
   };
+  
 
   return (
     <>
