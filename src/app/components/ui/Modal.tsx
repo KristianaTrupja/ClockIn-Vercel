@@ -28,9 +28,18 @@ export function Modal({
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose()
     }
-    if (isOpen) window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
+  
+    if (isOpen) {
+      window.addEventListener('keydown', handleKeyDown)
+      document.body.classList.add('modal-open')
+    }
+  
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+      document.body.classList.remove('modal-open')
+    }
   }, [isOpen, onClose])
+  
 
   return (
     <AnimatePresence>
