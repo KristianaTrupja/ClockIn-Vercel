@@ -40,7 +40,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           )}
   
           <section
-            className={`transition-opacity duration-300 ${
+            className={`w-max transition-opacity duration-300 ${
               isLoading ? "opacity-0 pointer-events-none" : "opacity-100"
             } 2xl:mx-50 mt-11 min-h-screen`}
             style={{ fontFamily: "var(--font-anek-bangla)" }}
