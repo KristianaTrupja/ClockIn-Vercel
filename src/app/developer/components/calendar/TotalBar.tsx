@@ -67,7 +67,7 @@ export default function TotalBar() {
                   className="total-field flex h-10 gap-1 items-center justify-between border-t-[1px] border-gray-300 relative p-[20px]"
                   key={`${index}-${projectIndex}`}
                 >
-                  <div>{total}</div>
+                  <div>{total.toFixed(2)}</div>
                   <Delete
                     className="w-5 h-5 text-red-500 cursor-pointer"
                     onClick={() => removeProject(proj.projectKey)} // Call removeProject on click
@@ -79,7 +79,7 @@ export default function TotalBar() {
         ))}
       </div>
       <div className="border-[1px] border-b-0 border-l-0 border-r-0 border-gray-300 w-full h-10 flex justify-center items-center text-black font-semibold">
-        {sum}
+        {sum.toFixed(2)}
       </div>
     </div>
   );
