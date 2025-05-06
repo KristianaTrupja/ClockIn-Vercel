@@ -39,7 +39,6 @@ export function Modal({
       document.body.classList.remove('modal-open')
     }
   }, [isOpen, onClose])
-  
 
   return (
     <AnimatePresence>
@@ -49,6 +48,7 @@ export function Modal({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
+          onClick={onClose}
         >
           <motion.div
             className={cn(
@@ -60,6 +60,7 @@ export function Modal({
             exit={{ y: 50, opacity: 0 }}
             role="dialog"
             aria-modal="true"
+            onClick={(e) => e.stopPropagation()}
           >
             {!hideCloseButton && (
               <button
