@@ -4,6 +4,7 @@ import { ProjectProvider } from "../context/ProjectContext";
 import { WorkHoursProvider } from "../context/WorkHoursContext";
 import Sidebar from "./components/sidebar/Sidebar";
 import { authOptions } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
 export default async function DashboardLayout({
   children,
@@ -11,6 +12,10 @@ export default async function DashboardLayout({
   children: React.ReactNode;
 }) {
   const session = await getServerSession(authOptions);
+    if (!session) {
+      // Not signed in
+      return redirect("/login");
+    }
   return (
     <WorkHoursProvider>
       <ProjectProvider>
