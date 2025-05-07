@@ -24,7 +24,7 @@ export function AddUserModal({ open, onClose, formData, onChange, onSubmit }: Pr
         Plotësoni fushat përkatëse për të krijuar një user të ri dhe vendosni një password të sigurt.
       </p>
       <div className="space-y-4 flex flex-wrap gap-2">
-        <InputField label="Emri i plote:" name="name" value={formData.username} onChange={onChange} placeholder="Shembull: Andi Lazaj" />
+        <InputField label="Emri i plote:" name="username" value={formData.username} onChange={onChange} placeholder="Shembull: Andi Lazaj" />
         <InputField label="Email:" name="email" value={formData.email} onChange={onChange} placeholder="Shembull: andi@example.com" />
         <InputField label="Password:" name="password" value={formData.password} onChange={onChange} type="password" placeholder="Shembull: ********"/>
         <InputField label="Roli:" name="role" value={formData.role} onChange={onChange} placeholder="Shembull: Dev" />

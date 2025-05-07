@@ -1,4 +1,3 @@
-// lib/api/projects.ts
 
 export type ProjectData = {
   company: string;

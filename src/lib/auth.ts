@@ -46,23 +46,26 @@ export const authOptions: NextAuthOptions = {
         })
       ],
       callbacks: {
-        async jwt({ token, user}) {
-            if(user) {
-                return {
-                    ...token,
-                    username: user.username
-                }
-            }
-            return token
-          },
-        async session({ session, user, token }) {
+        async jwt({ token, user }) {
+          if (user) {
             return {
-                ...session,
-                user: {
-                    ...session.user,
-                    username: token.username
-                }
-            }
+              ...token,
+              username: user.username,
+              role: user.role, // ✅ include role here
+            };
           }
+          return token;
+        },
+        async session({ session, token }) {
+          return {
+            ...session,
+            user: {
+              ...session.user,
+              username: token.username,
+              role: token.role, // ✅ expose role to client session
+            },
+          };
+        }
       }
+      
 }

@@ -9,7 +9,6 @@ export default async function DashboardLayout({ children }: { children: React.Re
  
   const session = await getServerSession(authOptions);
 
-  console.log(session,"session")
   return (
     <section
       className="2xl:mx-40 mt-11 min-h-screen"
