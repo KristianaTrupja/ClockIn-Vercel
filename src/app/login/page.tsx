@@ -1,7 +1,8 @@
 "use client"
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/lib/supabase";
 import { useState } from "react";
+import {signIn} from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function Login() {
   const [data,setData] = useState<{
@@ -11,53 +12,24 @@ export default function Login() {
     email: "",
     password: "",
   });
+const router = useRouter();
+  
+const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
 
-//   const login = async () => {
-//     try {
-//       const { data: sessionData, error } = await supabase.auth.signUp({
-//         email: data.email,
-//         password: data.password,
-//       });
-  
-//       if (error) {
-//         console.error("Login error:", error.message);
-//         alert("Invalid credentials or user not found.");
-//       } else {
-//         console.log("Login successful:", sessionData);
-//         // Redirect after login if needed:
-//         window.location.href = "/";
-//       }
-//     } catch (e) {
-//       console.error("Unexpected error:", e);
-//     }
-//   };
-  
-const signUp = async () => {
-    try {
-      const { data: signUpData, error } = await supabase.auth.signUp({
-        email: data.email,
-        password: data.password,
-      });
-  
-      if (error) {
-        console.error("Sign-up error:", error.message);
-        alert(error.message);
-      } else {
-        console.log("Sign-up successful:", signUpData);
-        if (signUpData.user && !signUpData.session) {
-          // User created but needs to verify email
-          alert("A verification link has been sent to your email.");
-        } else {
-          // Email verification not required, or session already active
-          window.location.href = "/";
-        }
-      }
-    } catch (e) {
-      console.error("Unexpected error:", e);
-      alert("Unexpected error during sign-up.");
-    }
-  };
-  
+  const signInData = await signIn("credentials", {
+    redirect: false,
+    email: data.email,
+    password: data.password,
+  });
+
+  if(signInData?.error) {
+    console.log("Login error:", signInData.error);
+    alert("Invalid credentials or user not found.");
+  }else{
+    router.push("/admin")
+  }
+};
     const handleChange = (e: any)=>{
         const {name,value} = e.target
         setData((prev)=>({...prev,[name]:value}))
@@ -74,7 +46,7 @@ const signUp = async () => {
       <div className="bg-[#F6F6F6] mt-5 p-8 lg:p-20 rounded-md shadow-sm border-b-5 border-[#244B77]">
         <h3 className="text-3xl sm:text-4xl text-[#244B77]">Sign In</h3>
 
-        <form className="mt-8 space-y-6">
+        <form className="mt-8 space-y-6" onSubmit={onSubmit}>
           <div className="flex flex-col">
             <label
               htmlFor="email"
@@ -114,7 +86,7 @@ const signUp = async () => {
           </div>
 
           <div className="flex justify-center">
-            <Button size="lg" onClick={signUp}>Sign In</Button>
+            <Button size="lg">Sign In</Button>
           </div>
         </form>
       </div>

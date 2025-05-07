@@ -5,7 +5,7 @@ import React from "react";
 
 type User = {
   id: number;
-  name: string;
+  username: string;
   email: string;
   password: string;
   role: string;
@@ -31,7 +31,7 @@ export function UserRow({ emp, index, isEditing, formData, onChange, onEdit, onD
 
       {isEditing ? (
         <>
-          {["name", "email", "password", "role"].map((field) => (
+          {["username", "email", "password", "role"].map((field) => (
             <td key={field} className="px-4 py-2 rounded-sm">
               <input
                 name={field}
@@ -47,7 +47,7 @@ export function UserRow({ emp, index, isEditing, formData, onChange, onEdit, onD
         </>
       ) : (
         <>
-          <td className="px-4 py-2 rounded-sm">{emp.name}</td>
+          <td className="px-4 py-2 rounded-sm">{emp.username}</td>
           <td className="px-4 py-2 rounded-sm">{emp.email}</td>
           <td className="px-4 py-2 rounded-sm">{emp.password}</td>
           <td className="px-4 py-2 rounded-sm">{emp.role}</td>

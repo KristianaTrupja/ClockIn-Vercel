@@ -2,8 +2,14 @@
 import { Suspense } from "react";
 import Sidebar from "./layout/Sidebar";
 import TopNavBar from "./layout/TopNavBar";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
+ 
+  const session = await getServerSession(authOptions);
+
+  console.log(session,"session")
   return (
     <section
       className="2xl:mx-40 mt-11 min-h-screen"
@@ -17,7 +23,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           ClockIn
         </h2>
         <h4 className="text-[#116B16] font-semibold text-xl">
-          Kristiana Trupja (Admin)
+        {session?.user?.username || "User"}
         </h4>
       </div>
       <TopNavBar />

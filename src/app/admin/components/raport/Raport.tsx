@@ -3,12 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 export default function Raport() {
   const employees = [
-    { id: 1, name: "Andi Lazaj", hours: 40 },
-    { id: 2, name: "Emiljano Duraku", hours: 35 },
-    { id: 3, name: "Elson Gasa", hours: 42 },
-    { id: 4, name: "Ivi Beqiri", hours: 42 },
-    { id: 5, name: "Jetmir Ahmati", hours: 42 },
-    { id: 6, name: "Kristiana Trupja", hours: 42 },
+    { id: 1, username: "Andi Lazaj", hours: 40 },
+    { id: 2, username: "Emiljano Duraku", hours: 35 },
+    { id: 3, username: "Elson Gasa", hours: 42 },
+    { id: 4, username: "Ivi Beqiri", hours: 42 },
+    { id: 5, username: "Jetmir Ahmati", hours: 42 },
+    { id: 6, username: "Kristiana Trupja", hours: 42 },
   ];
   return (
     <section className="overflow-x-auto rounded-md">
@@ -33,7 +33,7 @@ export default function Raport() {
               <td className="px-4 py-2 bg-[#244B77] text-white font-semibold rounded-sm text-xl">
                 {index + 1}.
               </td>
-              <td className="px-4 py-2 rounded-sm">{emp.name}</td>
+              <td className="px-4 py-2 rounded-sm">{emp.username}</td>
               <td className="px-4 py-2 rounded-sm">{emp.hours}</td>
               <td className="px-4 py-2 rounded-sm">
                 <Button
