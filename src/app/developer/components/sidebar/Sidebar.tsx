@@ -91,7 +91,7 @@ export default function Sidebar() {
     setSelectedProjects([]);
     setIsModalOpen(false);
 
-    // window.location.reload();
+    window.location.reload();
   };
 
   return (

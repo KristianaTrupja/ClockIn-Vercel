@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { AddUserModal } from "./AddUserModal";
 import { UserTable } from "./UserTable";
 import { useRouter } from "next/navigation";
+import { toast, Toaster } from "sonner";
 
 const defaultEmployees = [
   { id: 1, username: "Andi Lazaj", email: "andi.lazaj@dela-tech.com", password: "123", role: "Dev" },
@@ -69,7 +70,7 @@ export default function Users() {
    if(response.ok) {
     router.push('/login')
    }else{
-    console.error('Registration failed')
+    toast.error("Registrimi dështoi. Ju lutem provoni përsëri.");
    }
   };
 
@@ -97,6 +98,7 @@ export default function Users() {
         onChange={handleInputChange}
         onSubmit={addNewEmployee}
       />
+      <Toaster/>
     </section>
   );
 }

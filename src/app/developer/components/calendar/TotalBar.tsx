@@ -48,7 +48,7 @@ export default function TotalBar() {
     localStorage.setItem(key, JSON.stringify(updatedProjects));
 
     // Refresh the page to reflect changes
-    // window.location.reload();
+    window.location.reload();
   };
 
   return (

@@ -1,10 +1,8 @@
 "use client"
 
 import { useEffect, useState } from "react";
-import { CalendarProvider } from "../context/CalendarContext";
-import { ProjectProvider } from "../context/ProjectContext";
-import { WorkHoursProvider } from "../context/WorkHoursContext";
 import Sidebar from "./components/sidebar/Sidebar";
+import DeveloperProvider from "../components/ui/DeveloperProvider";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
@@ -30,9 +28,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }
 
   return (
-    <WorkHoursProvider>
-      <ProjectProvider>
-        <CalendarProvider>
+    <DeveloperProvider>
           {isLoading && (
             <div className="fixed inset-0 flex items-center justify-center bg-white z-50">
               <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
@@ -59,9 +55,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <Sidebar />
             <main className="ml-64 2xl:w-fit min-h-[80vh] mt-2">{children}</main>
           </section>
-        </CalendarProvider>
-      </ProjectProvider>
-    </WorkHoursProvider>
+          </DeveloperProvider>
   );
   
 }

@@ -3,6 +3,9 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import {signIn} from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { Toaster } from "@/components/ui/sonner"
+import { toast } from "sonner";
+
 
 export default function Login() {
   const [data,setData] = useState<{
@@ -13,7 +16,6 @@ export default function Login() {
     password: "",
   });
 const router = useRouter();
-  
 const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
   e.preventDefault();
 
@@ -24,9 +26,9 @@ const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
   });
 
   if(signInData?.error) {
-    console.log("Login error:", signInData.error);
-    alert("Invalid credentials or user not found.");
+    toast.error("Error: Oops! Dicka shkoi gabim. Ju lutem provoni perseri!");
   }else{
+    router.refresh();
     router.push("/admin")
   }
 };
@@ -90,6 +92,7 @@ const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
           </div>
         </form>
       </div>
+      <Toaster />
     </section>
   );
 }
