@@ -28,9 +28,9 @@ export default function BottomBar() {
         return (
           <div
             key={day}
-            className={`border-t-5 border-gray-300 w-9 h-6 flex justify-center gap-1 items-center text-gray-800 font-semibold pt-1 ${weekendClass}`}
+            className={`border-t-5 border-gray-300 w-9 h-6 flex justify-center gap-1 items-center text-xs pt-1 ${weekendClass}`}
           >
-            {totalHours}
+            {totalHours.toFixed(2)}
           </div>
         );
       })}

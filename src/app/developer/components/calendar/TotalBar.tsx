@@ -54,12 +54,12 @@ export default function TotalBar() {
   return (
     <div className="flex flex-col justify-between h-[76vh] border-[1px] border-gray-300 bg-blue-50">
       <div className="flex flex-col overflow-auto items-center">
-        <div className="border-gray-300 w-full border-b h-10 flex justify-center items-center text-black font-semibold p-2">
+        <div className="border-gray-300 w-full border-b h-[41px] flex justify-center items-center text-black font-semibold p-2">
           Total
         </div>
         {parsedProjects?.map((projects, index) => (
           <div key={index} className="w-full">
-            <div className="project-field__name flex items-center w-full p-[19px] font-semibold bg-gray-200 border-b-[1px]" />
+            <div className="project-field__name flex items-center w-full p-[18.5px] font-semibold bg-gray-200 border-b-[1px]" />
             {projects.projects.map((proj, projectIndex) => {
               const total = getTotalHoursForProjectInMonth(proj.projectKey, month + 1, year);
               return (
@@ -67,7 +67,7 @@ export default function TotalBar() {
                   className="total-field flex h-10 gap-1 items-center justify-between border-t-[1px] border-gray-300 relative p-[20px]"
                   key={`${index}-${projectIndex}`}
                 >
-                  <div>{total}</div>
+                  <div>{total.toFixed(2)}</div>
                   <Delete
                     className="w-5 h-5 text-red-500 cursor-pointer"
                     onClick={() => removeProject(proj.projectKey)} // Call removeProject on click
@@ -79,7 +79,7 @@ export default function TotalBar() {
         ))}
       </div>
       <div className="border-[1px] border-b-0 border-l-0 border-r-0 border-gray-300 w-full h-10 flex justify-center items-center text-black font-semibold">
-        {sum}
+        {sum.toFixed(2)}
       </div>
     </div>
   );

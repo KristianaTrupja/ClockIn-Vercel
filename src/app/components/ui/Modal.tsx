@@ -28,8 +28,16 @@ export function Modal({
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose()
     }
-    if (isOpen) window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
+  
+    if (isOpen) {
+      window.addEventListener('keydown', handleKeyDown)
+      document.body.classList.add('modal-open')
+    }
+  
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+      document.body.classList.remove('modal-open')
+    }
   }, [isOpen, onClose])
 
   return (
@@ -40,6 +48,7 @@ export function Modal({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
+          onClick={onClose}
         >
           <motion.div
             className={cn(
@@ -51,6 +60,7 @@ export function Modal({
             exit={{ y: 50, opacity: 0 }}
             role="dialog"
             aria-modal="true"
+            onClick={(e) => e.stopPropagation()}
           >
             {!hideCloseButton && (
               <button
