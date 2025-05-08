@@ -78,6 +78,7 @@ export default function Users() {
       // setEmployees((prev) => [...prev, newUser.user]); // append new user
       setOpen(false);
       toast.success("Përdoruesi u shtua me sukses.");
+      window.location.reload(); // reload the page to fetch new data
     } else {
       const err = await response.json();
       toast.error(err.message || "Registrimi dështoi. Ju lutem provoni përsëri.");

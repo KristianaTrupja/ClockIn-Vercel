@@ -22,7 +22,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
           ClockIn
         </h2>
         <h4 className="text-[#116B16] font-semibold text-xl">
-        {session?.user?.username || "User"}
+        {session?.user?.username || "User"} (Admin)
         </h4>
       </div>
       <TopNavBar />
