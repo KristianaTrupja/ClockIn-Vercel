@@ -2,8 +2,8 @@ import { Button } from "@/components/ui/button";
 
 type Props = {
   index: number;
-  editedData: { date: string; holidays: string };
-  onChange: (e: React.ChangeEvent<HTMLInputElement>, field: "date" | "holidays") => void;
+  editedData: { date: string; holiday: string };
+  onChange: (e: React.ChangeEvent<HTMLInputElement>, field: "date" | "holiday") => void;
   onSave: () => void;
 };
 
@@ -22,8 +22,8 @@ export default function VocationEditRow({ index, editedData, onChange, onSave }:
       </td>
       <td className="px-4 py-2 rounded-sm">
         <input
-          value={editedData.holidays}
-          onChange={(e) => onChange(e, "holidays")}
+          value={editedData.holiday}
+          onChange={(e) => onChange(e, "holiday")}
           className="border px-2 py-1 rounded w-full bg-white"
         />
       </td>

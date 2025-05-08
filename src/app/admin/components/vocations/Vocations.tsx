@@ -1,30 +1,31 @@
-import React, { useState } from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Modal } from "@/app/components/ui/Modal";
 import VocationTable from "./VocationTable";
 import AddVocationModal from "./AddVocationModal";
+import { Holiday } from "@/types/holiday";
 
-const initialData = [
-  { id: 1, date: "01.01.2025", holidays: "Festat e Vitit te Ri" },
-  { id: 2, date: "02.01.2025", holidays: "Festat e Vitit te Ri" },
-  { id: 3, date: "14.03.2025", holidays: "Dita e veres" },
-  { id: 4, date: "22.03.2025", holidays: "Dita e Nevruzit" },
-  { id: 5, date: "30.03.2025", holidays: "Dita e Bajramit te madh" },
-  { id: 6, date: "20.04.2025", holidays: "E diela e Pashkeve Ortodokse" },
-];
 
 export default function Vocations() {
-  const [vocations, setVocations] = useState(initialData);
+  const [vocations, setVocations] = useState<Holiday[]>([]);
   const [editingId, setEditingId] = useState<number | null>(null);
-  const [editedData, setEditedData] = useState({ date: "", holidays: "" });
+  const [editedData, setEditedData] = useState({ date: "", holiday: "" });
   const [modalOpen, setModalOpen] = useState(false);
-  const [newHoliday, setNewHoliday] = useState({ date: "", holidays: "" });
+  const [newHoliday, setNewHoliday] = useState({ date: "", holiday: "" });
+
+  useEffect(() => {
+    fetch("/api/vocations")
+      .then((res) => res.json())
+      .then((data) => setVocations(data.holidays))
+      .catch((err) => console.error("Failed to fetch holidays", err));
+  }, []);
 
   const handleEdit = (id: number) => {
     const emp = vocations.find((v) => v.id === id);
     if (emp) {
       setEditingId(id);
-      setEditedData({ date: emp.date, holidays: emp.holidays });
+      setEditedData({ date: emp.date, holiday: emp.holiday });
     }
   };
 
@@ -35,21 +36,45 @@ export default function Vocations() {
     setEditedData((prev) => ({ ...prev, [field]: e.target.value }));
   };
 
-  const handleSave = (id: number) => {
-    const updated = vocations.map((v) =>
-      v.id === id ? { ...v, ...editedData } : v
-    );
-    setVocations(updated);
-    setEditingId(null);
+  const handleSave = async (id: number) => {
+    try {
+      const res = await fetch("/api/vocations", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, ...editedData }),
+      });
+      if (!res.ok) throw new Error("Failed to update");
+
+      const updated = await res.json();
+      setVocations((prev) =>
+        prev.map((v) => (v.id === id ? updated.holiday : v))
+      );
+      setEditingId(null);
+    } catch (error) {
+      console.error(error);
+      alert("Failed to update holiday");
+    }
   };
 
-  const handleDelete = (id: number) => {
+  const handleDelete = async (id: number) => {
     const emp = vocations.find((v) => v.id === id);
     const confirmed = window.confirm(
       `A jeni i sigurt që doni të fshini pushimin më datë ${emp?.date}?`
     );
-    if (confirmed) {
+    if (!confirmed) return;
+
+    try {
+      const res = await fetch("/api/vocations", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id }),
+      });
+      if (!res.ok) throw new Error("Failed to delete");
+
       setVocations((prev) => prev.filter((v) => v.id !== id));
+    } catch (error) {
+      console.error(error);
+      alert("Failed to delete holiday");
     }
   };
 
@@ -60,40 +85,57 @@ export default function Vocations() {
     setNewHoliday((prev) => ({ ...prev, [field]: e.target.value }));
   };
 
-  const handleAdd = () => {
-    if (!newHoliday.date || !newHoliday.holidays) {
+  const handleAdd = async () => {
+    if (!newHoliday.date || !newHoliday.holiday) {
       alert("Ju lutem plotësoni të gjitha fushat e detyrueshme.");
       return;
     }
-    const newId = Math.max(...vocations.map((v) => v.id), 0) + 1;
-    setVocations([...vocations, { id: newId, ...newHoliday }]);
-    setNewHoliday({ date: "", holidays: "" });
-    setModalOpen(false);
+
+    try {
+      const res = await fetch("/api/vocations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newHoliday),
+      });
+
+      if (!res.ok) throw new Error("Failed to add holiday");
+
+      const data = await res.json();
+      setVocations((prev) => [...prev, data.holiday]);
+      setNewHoliday({ date: "", holiday: "" });
+      setModalOpen(false);
+    } catch (error) {
+      console.error(error);
+      alert("Failed to add holiday");
+    }
   };
-
+console.log(vocations,"vocations");
   return (
-    <section className="overflow-x-auto rounded-md">
-      <VocationTable
-        vocations={vocations}
-        editingId={editingId}
-        editedData={editedData}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-        onChange={handleChange}
-        onSave={handleSave}
-      />
+<section className="rounded-md">
+  <div className="overflow-y-auto max-h-[520px]">
+    <VocationTable
+      vocations={vocations}
+      editingId={editingId}
+      editedData={editedData}
+      onEdit={handleEdit}
+      onDelete={handleDelete}
+      onChange={handleChange}
+      onSave={handleSave}
+    />
+  </div>
 
-      <div className="flex justify-center mt-20">
-        <Button onClick={() => setModalOpen(true)}>Shto ditë të re pushimi</Button>
-      </div>
+  <div className="flex justify-center mt-20">
+    <Button onClick={() => setModalOpen(true)}>Shto ditë të re pushimi</Button>
+  </div>
 
-      <AddVocationModal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        onChange={handleNewChange}
-        onSubmit={handleAdd}
-        data={newHoliday}
-      />
-    </section>
+  <AddVocationModal
+    isOpen={modalOpen}
+    onClose={() => setModalOpen(false)}
+    onChange={handleNewChange}
+    onSubmit={handleAdd}
+    data={newHoliday}
+  />
+</section>
+
   );
 }

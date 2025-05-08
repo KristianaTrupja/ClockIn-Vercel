@@ -24,3 +24,8 @@ model User {
   updatedAt DateTime @updatedAt
 }
 
+model Holidays {
+  id       Int    @id @default(autoincrement())
+  date     String 
+  holiday    String 
+}

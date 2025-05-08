@@ -1,13 +1,14 @@
 import VocationRow from "./VocationRow";
 import VocationEditRow from "./VocationEditRow";
+import { Holiday } from "@/types/holiday";
 
 type Props = {
-  vocations: { id: number; date: string; holidays: string }[];
+  vocations: Holiday[];
   editingId: number | null;
-  editedData: { date: string; holidays: string };
+  editedData: { date: string; holiday: string };
   onEdit: (id: number) => void;
   onDelete: (id: number) => void;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>, field: "date" | "holidays") => void;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>, field: "date" | "holiday") => void;
   onSave: (id: number) => void;
 };
 

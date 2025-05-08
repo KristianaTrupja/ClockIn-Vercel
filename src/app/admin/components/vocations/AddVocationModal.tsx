@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/button";
 type Props = {
   isOpen: boolean;
   onClose: () => void;
-  data: { date: string; holidays: string };
-  onChange: (e: React.ChangeEvent<HTMLInputElement>, field: "date" | "holidays") => void;
+  data: { date: string; holiday: string };
+  onChange: (e: React.ChangeEvent<HTMLInputElement>, field: "date" | "holiday") => void;
   onSubmit: () => void;
 };
 
@@ -25,8 +25,8 @@ export default function AddVocationModal({ isOpen, onClose, data, onChange, onSu
           placeholder="Emri i pushimit"
           type="text"
           className="w-full border rounded px-3 py-2"
-          value={data.holidays}
-          onChange={(e) => onChange(e, "holidays")}
+          value={data.holiday}
+          onChange={(e) => onChange(e, "holiday")}
         />
         <Button className="w-full" onClick={onSubmit}>
           Shto
