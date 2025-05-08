@@ -29,3 +29,9 @@ model Holidays {
   date     String 
   holiday    String 
 }
+
+model Projects {
+  id       Int    @id @default(autoincrement())
+  company     String 
+  project    String 
+}
