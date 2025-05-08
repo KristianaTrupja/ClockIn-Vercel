@@ -53,3 +53,39 @@ export async function GET() {
     return NextResponse.json({ message: "Failed to fetch users" }, { status: 500 });
   }
 }
+
+export async function DELETE(req: Request) {
+  try {
+    const { id } = await req.json();
+
+    if (!id) {
+      return NextResponse.json({ message: "User ID is required" }, { status: 400 });
+    }
+
+    await db.user.delete({ where: { id } });
+    return NextResponse.json({ message: "User deleted successfully" }, { status: 200 });
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    return NextResponse.json({ message: "Failed to delete user" }, { status: 500 });
+  }
+}
+
+export async function PUT(req: Request) {
+  try {
+    const { id, username, email, password, role } = await req.json();
+
+    if (!id) {
+      return NextResponse.json({ message: "User ID is required" }, { status: 400 });
+    }
+
+    const updatedUser = await db.user.update({
+      where: { id },
+      data: { username, email, role },
+    });
+
+    return NextResponse.json({ user: updatedUser }, { status: 200 });
+  } catch (error) {
+    console.error("Error updating user:", error);
+    return NextResponse.json({ message: "Failed to update user" }, { status: 500 });
+  }
+}

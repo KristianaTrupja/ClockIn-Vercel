@@ -3,66 +3,113 @@ import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { AddUserModal } from "./AddUserModal";
 import { UserTable } from "./UserTable";
-import { useRouter } from "next/navigation";
 import { toast, Toaster } from "sonner";
+import { User, UserFormData } from "@/types/user";
 
-type User = {
-  id: number;
-  username: string;
-  email: string;
-  role: string;
-  createdAt: string;
-  updatedAt: string;
-};
 export default function Users() {
   const [open, setOpen] = useState(false);
-  // const [employees, setEmployees] = useState<any[]>([]);
   const [editingId, setEditingId] = useState<number | null>(null);
-  const [formData, setFormData] = useState<{ id: number; username: string; email: string; password: string; role: string }>({ id: 0, username: "", email: "", password: "", role: "" });
+  const [formData, setFormData] = useState<UserFormData>({
+    id: 0,
+    username: "",
+    email: "",
+    password: "",
+    role: "",
+  });
   const [user, setUser] = useState<{ users: User[] } | null>(null);
-
-  console.log("User:", user);
 
   useEffect(() => {
     const fetchUser = async () => {
-      const res = await fetch('/api/user');
+      const res = await fetch("/api/user");
       const data = await res.json();
       setUser(data);
     };
-  
+
     fetchUser();
   }, []);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const startEditing = (emp: any) => {
-    if (emp.id === undefined) return;
-    setEditingId(emp.id);
-    setFormData({ id: emp.id, username: emp.username, email: emp.email, password: "", role: emp.role });
-  };
+  const deleteItem = async (emp: User) => {
+    if (!emp.id) return;
 
-  const deleteItem = (emp: any) => {
-    if (emp.id === undefined) return;
     if (window.confirm(`Jeni i sigurt që doni të fshini ${emp.username}?`)) {
-      // setEmployees((prev) => prev.filter((e) => e.id !== emp.id));
+      try {
+        const res = await fetch("/api/user", {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: emp.id }),
+        });
+
+        if (res.ok) {
+          setUser((prev) => ({
+            users: prev?.users.filter((u) => u.id !== emp.id) || [],
+          }));
+          toast.success("Përdoruesi u fshi me sukses.");
+        } else {
+          const err = await res.json();
+          toast.error(err.message || "Fshirja dështoi.");
+        }
+      } catch {
+        toast.error("Dështoi lidhja me serverin.");
+      }
     }
   };
 
-  const saveChanges = () => {
-    if (editingId !== null) {
-      // setEmployees((prev) =>
-      //   prev.map((emp) => (emp.id === editingId ? { ...emp, ...formData } : emp))
-      // );
-      setEditingId(null);
-      setFormData({ id: 0, username: "", email: "", password: "", role: "" });
+  const startEditing = (emp: User) => {
+    if (!emp.id) return;
+
+    setEditingId(emp.id);
+    setFormData({
+      id: emp.id,
+      username: emp.username,
+      email: emp.email,
+      password: "",
+      role: emp.role,
+    });
+  };
+
+  const saveChanges = async () => {
+    const { id, username, email, role } = formData;
+    if (!id || !username || !email || !role) {
+      toast.error("Ju lutem plotësoni të gjitha fushat përveç fjalëkalimit.");
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/user", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, username, email, role }),
+      });
+
+      if (res.ok) {
+        const updated = await res.json();
+        setUser((prev) => ({
+          users: prev?.users.map((u) =>
+            u.id === updated.user.id ? updated.user : u
+          ) || [],
+        }));
+        toast.success("Përdoruesi u përditësua me sukses.");
+        setEditingId(null);
+        setFormData({ id: 0, username: "", email: "", password: "", role: "" });
+      } else {
+        const err = await res.json();
+        toast.error(err.message || "Përditësimi dështoi.");
+      }
+    } catch {
+      toast.error("Gabim gjatë përditësimit.");
     }
   };
 
   const addNewEmployee = async () => {
-    if (!formData.username || !formData.email || !formData.password || !formData.role) {
+    const { username, email, password, role } = formData;
+    if (!username || !email || !password || !role) {
       alert("Ju lutem plotësoni të gjitha fushat.");
       return;
     }
@@ -74,11 +121,9 @@ export default function Users() {
     });
 
     if (response.ok) {
-      const newUser = await response.json();
-      // setEmployees((prev) => [...prev, newUser.user]); // append new user
-      setOpen(false);
       toast.success("Përdoruesi u shtua me sukses.");
-      window.location.reload(); // reload the page to fetch new data
+      setOpen(false);
+      window.location.reload();
     } else {
       const err = await response.json();
       toast.error(err.message || "Registrimi dështoi. Ju lutem provoni përsëri.");

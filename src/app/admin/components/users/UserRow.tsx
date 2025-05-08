@@ -1,33 +1,34 @@
-// components/users/UserRow.tsx
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { Delete, FilePenLine } from "lucide-react";
-import React from "react";
-
-type User = {
-  id: number;
-  username: string;
-  email: string;
-  role: string;
-};
+import { User, UserFormData } from "@/types/user";
 
 type Props = {
   emp: User;
   index: number;
   isEditing: boolean;
-  formData: User;
+  formData: UserFormData;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onEdit: (user: User) => void;
   onDelete: (user: User) => void;
   onSave: () => void;
 };
 
-export function UserRow({ emp, index, isEditing, formData, onChange, onEdit, onDelete, onSave }: Props) {
+export function UserRow({
+  emp,
+  index,
+  isEditing,
+  formData,
+  onChange,
+  onEdit,
+  onDelete,
+  onSave,
+}: Props) {
   return (
     <tr className="border-t border-[#d1d1d1] font-semibold text-lg bg-[#E3F0FF]">
       <td className="px-4 py-2 bg-[#244B77] text-white font-semibold rounded-sm text-xl">
         {index + 1}.
       </td>
-
       {isEditing ? (
         <>
           {["username", "email", "role"].map((field) => (
