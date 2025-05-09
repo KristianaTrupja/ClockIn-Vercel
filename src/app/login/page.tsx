@@ -28,7 +28,7 @@ export default function Login() {
 
       const role = session?.user?.role;
 
-      if (role === "admin") {
+      if (role?.toLowerCase() === "admin") {
         router.push("/admin");
       } else if (role?.toLowerCase() === "dev") {
         router.push("/developer");

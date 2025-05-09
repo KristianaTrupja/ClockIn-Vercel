@@ -1,8 +1,5 @@
+import { redirect } from "next/navigation";
 
-
-export default function Home() {
-  return (
-    <section>
-    </section>
-  );
-}
+    export default function ProjectRootPage() {
+      redirect("/login");
+    }

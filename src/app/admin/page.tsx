@@ -11,7 +11,7 @@ export default async function AdminPage() {
     return redirect("/login");
   }
 
-  if (session.user.role !== "admin") {
+  if (session.user.role.toLowerCase() !== "admin") {
     // Signed in, but not admin
     return redirect("/unauthorized");
   }
