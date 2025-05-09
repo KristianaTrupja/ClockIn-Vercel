@@ -13,26 +13,34 @@ export default function Projects() {
   const [formData, setFormData] = useState<FormData>({ name: "", project: "" });
 
   const [selectors, setSelectors] = useState<{ [key: string]: string[] }>({});
-//  useEffect(() => {
-//   fetch("/api/projectList")
-//     .then((res) => res.json())
-//     .then((data) => {
-//       const formattedSelectors: { [key: string]: string[] } = {};
 
-//       data.forEach(({ company, project }: { company: string; project: string }) => {
-//         if (formattedSelectors[company]) {
-//           if (!formattedSelectors[company].includes(project)) {
-//             formattedSelectors[company].push(project);
-//           }
-//         } else {
-//           formattedSelectors[company] = [project];
-//         }
-//       });
-
-//       setSelectors(formattedSelectors);
-//     })
-//     .catch((err) => console.error("Failed to fetch projects", err));
-// }, []);
+  useEffect(() => {
+    fetch("/api/projectList")
+      .then((res) => res.json())
+      .then((data) => {
+        // Defensive check to ensure data is an array
+        if (!Array.isArray(data)) {
+          console.error("Expected an array but got:", data);
+          return;
+        }
+  
+        const formattedSelectors: { [key: string]: string[] } = {};
+  
+        data.forEach(({ company, project }: { company: string; project: string }) => {
+          if (formattedSelectors[company]) {
+            if (!formattedSelectors[company].includes(project)) {
+              formattedSelectors[company].push(project);
+            }
+          } else {
+            formattedSelectors[company] = [project];
+          }
+        });
+  
+        setSelectors(formattedSelectors);
+      })
+      .catch((err) => console.error("Failed to fetch projects", err));
+  }, []);
+  
 
 
   const handleChange = useCallback(
@@ -98,7 +106,6 @@ export default function Projects() {
   const handleToggle = useCallback((id: string) => {
     setOpenSelectorId((prev) => (prev === id ? null : id));
   }, []);
-console.log("selectors", selectors);
   return (
     <section className="flex gap-10 font-[var(--font-anek-bangla)]">
       <div className="bg-[#E3F0FF] w-1/2 2xl:w-1/3 h-[70vh] flex justify-center shadow-xl">

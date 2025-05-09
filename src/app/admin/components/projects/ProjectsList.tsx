@@ -13,6 +13,7 @@ export default function ProjectList({
   openSelectorId,
   handleToggle,
 }: ProjectListProps) {
+
   return (
     <div className="p-5 w-full mx-9 bg-white my-12 h-[60vh]">
       <h2 className="text-2xl text-[#244B77] font-bold text-left mb-3 mt-5">
