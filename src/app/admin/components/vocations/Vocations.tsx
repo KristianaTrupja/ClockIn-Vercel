@@ -109,7 +109,6 @@ export default function Vocations() {
       alert("Failed to add holiday");
     }
   };
-console.log(vocations,"vocations");
   return (
 <section className="rounded-md">
   <div className="overflow-y-auto max-h-[520px]">

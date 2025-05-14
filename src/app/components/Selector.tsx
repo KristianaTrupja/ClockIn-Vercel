@@ -1,16 +1,17 @@
 "use client";
-import { useEffect, useState } from "react";
-import { FilePenLine } from "lucide-react";
+import { ReactEventHandler, useEffect, useState } from "react";
+import { Delete, FilePenLine } from "lucide-react";
 
 interface SelectorProps {
   id: string;
-  label?: string;
+  label: string;
   options: string[];
   onChange: (value: string) => void;
   defaultValue?: string;
   isOpen: boolean;
   className?: string;
   onToggle: () => void;
+  handleDelete: (company: string, project: string) => void;
   variant?: string
 }
 
@@ -22,11 +23,11 @@ export default function Selector({
   isOpen,
   className,
   onToggle,
+  handleDelete,
   variant
 }: SelectorProps) {
   const [selected, setSelected] = useState(defaultValue);
   const [options, setOptions] = useState<string[]>([]);
-
   useEffect(() => {
     setOptions(initialOptions);
   }, [initialOptions]);
@@ -44,6 +45,11 @@ export default function Selector({
   const handleEditClick = (index: number) => {
     setEditingIndex(index);
     setEditingValue(options[index]);
+  };
+  const handleDeleteClick = (index: number) => {
+    // setDeletingIndex(index);
+    // setDeletingValue(options[index]);
+    handleDelete(label,options[index])
   };
 
   const handleEditChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,12 +83,11 @@ export default function Selector({
       setEditingIndex(null);
     }
   };
-  
 
   return (
     <div className="relative mb-3">
       {label && (
-        <label htmlFor={label} className="text-sm text-gray-700 mb-1 block">
+        <label htmlFor={label} className="text-[#244B77] font-semibold mb-1">
           {label}
         </label>
       )}
@@ -124,6 +129,7 @@ export default function Selector({
           <div className="flex justify-between items-center">
             <span>{option}</span>
             {hoveredIndex === index && (
+              <div>
               <button
                 onClick={(e) => {
                   e.stopPropagation();
@@ -133,7 +139,16 @@ export default function Selector({
               >
                 <FilePenLine size={16} />
               </button>
-              
+               <button
+                 onClick={(e) => {
+                  e.stopPropagation();
+                  handleDeleteClick(index);
+                }}
+               className="text-sm text-gray-600 ml-2 hover:text-black"
+             >
+               <Delete size={16} />
+             </button>
+             </div>
             )}
           </div>
         )}

@@ -5,7 +5,6 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
     const { company, project } = body;
-    console.log("Received data:", body);
 
     const newProject = await db.projects.create({
       data: { company, project },
@@ -47,7 +46,7 @@ export async function GET() {
 export async function DELETE(req: Request) {
   try {
     const { id } = await req.json();
-
+console.log(id,"id",req,"reqq")
     if (!id) {
       return NextResponse.json(
         { message: "Project ID is required" },

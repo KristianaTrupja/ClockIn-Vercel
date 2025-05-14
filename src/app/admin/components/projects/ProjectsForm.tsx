@@ -1,11 +1,7 @@
 // components/ProjectsForm.tsx
 import React from "react";
 import { Button } from "@/components/ui/button";
-
-interface FormData {
-  name: string;
-  project: string;
-}
+import { FormData } from "@/types/project";
 
 interface ProjectsFormProps {
   formData: FormData;

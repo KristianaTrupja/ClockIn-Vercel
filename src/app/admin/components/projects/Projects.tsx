@@ -2,17 +2,13 @@
 import React, { useState, useCallback, useEffect } from "react";
 import ProjectList from "./ProjectsList";
 import ProjectsForm from "./ProjectsForm";
-
-interface FormData {
-  name: string;
-  project: string;
-}
+import { FormData,ProjectEntry } from "@/types/project";
 
 export default function Projects() {
   const [openSelectorId, setOpenSelectorId] = useState<string | null>(null);
   const [formData, setFormData] = useState<FormData>({ name: "", project: "" });
-
   const [selectors, setSelectors] = useState<{ [key: string]: string[] }>({});
+  const [data, setData] = useState<ProjectEntry[]>([]);
 
   useEffect(() => {
     fetch("/api/projectList")
@@ -23,10 +19,10 @@ export default function Projects() {
           console.error("Expected an array but got:", data);
           return;
         }
-  
+        setData(data)
         const formattedSelectors: { [key: string]: string[] } = {};
   
-        data.forEach(({ company, project }: { company: string; project: string }) => {
+        data.forEach(({ company, project }: ProjectEntry) => {
           if (formattedSelectors[company]) {
             if (!formattedSelectors[company].includes(project)) {
               formattedSelectors[company].push(project);
@@ -41,8 +37,6 @@ export default function Projects() {
       .catch((err) => console.error("Failed to fetch projects", err));
   }, []);
   
-
-
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const { name, value } = e.target;
@@ -92,6 +86,7 @@ export default function Projects() {
         if (!response.ok) {
           throw new Error("Failed to save project to backend");
         }
+        window.location.reload()
       } catch (error) {
         console.error("Error saving project:", error);
         alert("Ka ndodhur një gabim gjatë ruajtjes së projektit.");
@@ -101,11 +96,47 @@ export default function Projects() {
     },
     [formData, selectors]
   );
+
+  const handleDelete = useCallback(
+    async (company: string, project: string) => {
+      const selectedData = data.filter(el => el.company === company && el.project === project);
+  
+      try {
+        const res = await fetch("/api/projectList", {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ id: selectedData[0]?.id }),
+        });
+  
+        if (!res.ok) {
+          throw new Error("Failed to delete project");
+        }
+  
+        setSelectors((prev) => {
+          const updatedProjects = prev[company].filter((p) => p !== project);
+          const newSelectors = { ...prev };
+          if (updatedProjects.length > 0) {
+            newSelectors[company] = updatedProjects;
+          } else {
+            delete newSelectors[company];
+          }
+          return newSelectors;
+        });
+      } catch (error) {
+        console.error("Error deleting project:", error);
+        alert("Ka ndodhur një gabim gjatë fshirjes së projektit.");
+      }
+    },
+    [data] // 👈 Important!
+  );
   
 
   const handleToggle = useCallback((id: string) => {
     setOpenSelectorId((prev) => (prev === id ? null : id));
   }, []);
+
   return (
     <section className="flex gap-10 font-[var(--font-anek-bangla)]">
       <div className="bg-[#E3F0FF] w-1/2 2xl:w-1/3 h-[70vh] flex justify-center shadow-xl">
@@ -113,6 +144,7 @@ export default function Projects() {
           selectors={selectors}
           openSelectorId={openSelectorId}
           handleToggle={handleToggle}
+          handleDelete={handleDelete}
         />
       </div>
       <div className="mt-20">

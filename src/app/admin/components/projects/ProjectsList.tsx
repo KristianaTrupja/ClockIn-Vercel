@@ -6,12 +6,14 @@ interface ProjectListProps {
   selectors: { [key: string]: string[] };
   openSelectorId: string | null;
   handleToggle: (id: string) => void;
+  handleDelete: (company: string, project: string) => void;
 }
 
 export default function ProjectList({
   selectors,
   openSelectorId,
   handleToggle,
+  handleDelete
 }: ProjectListProps) {
 
   return (
@@ -21,14 +23,15 @@ export default function ProjectList({
       </h2>
       {Object.keys(selectors).map((company) => (
         <div key={company} className="mb-3">
-          <h3 className="text-[#244B77] font-semibold mb-1">{company}</h3>
           <Selector
+            label={company}
             id={company}
             isOpen={openSelectorId === company}
             onToggle={() => handleToggle(company)}
             options={selectors[company]}
             onChange={(value) => console.log("Selected:", value)}
             defaultValue={selectors[company][0]}
+            handleDelete={handleDelete}
           />
         </div>
       ))}
