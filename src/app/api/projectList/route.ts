@@ -46,7 +46,6 @@ export async function GET() {
 export async function DELETE(req: Request) {
   try {
     const { id } = await req.json();
-console.log(id,"id",req,"reqq")
     if (!id) {
       return NextResponse.json(
         { message: "Project ID is required" },
@@ -63,6 +62,37 @@ console.log(id,"id",req,"reqq")
     console.error("Error deleting project:", error);
     return NextResponse.json(
       { message: "Failed to delete project" },
+      { status: 500 }
+    );
+  }
+}
+
+
+export async function PUT(req: Request) {
+  try {
+    const body = await req.json();
+    const { id, company, project } = body;
+
+    if (!id || !company || !project) {
+      return NextResponse.json(
+        { message: "ID, company and project are required" },
+        { status: 400 }
+      );
+    }
+
+    const updatedProject = await db.projects.update({
+      where: { id },
+      data: { company, project },
+    });
+
+    return NextResponse.json(
+      { project: updatedProject, message: "Project updated successfully" },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error updating project:", error);
+    return NextResponse.json(
+      { message: "Failed to update project" },
       { status: 500 }
     );
   }

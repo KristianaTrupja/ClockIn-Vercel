@@ -1,6 +1,7 @@
 "use client";
 import { ReactEventHandler, useEffect, useState } from "react";
-import { Delete, FilePenLine } from "lucide-react";
+import { Delete, FilePenLine, Save } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface SelectorProps {
   id: string;
@@ -12,7 +13,7 @@ interface SelectorProps {
   className?: string;
   onToggle: () => void;
   handleDelete: (company: string, project: string) => void;
-  variant?: string
+  variant?: string;
 }
 
 export default function Selector({
@@ -24,14 +25,14 @@ export default function Selector({
   className,
   onToggle,
   handleDelete,
-  variant
+  variant,
 }: SelectorProps) {
   const [selected, setSelected] = useState(defaultValue);
   const [options, setOptions] = useState<string[]>([]);
   useEffect(() => {
     setOptions(initialOptions);
   }, [initialOptions]);
-  
+
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [editingValue, setEditingValue] = useState("");
@@ -49,7 +50,7 @@ export default function Selector({
   const handleDeleteClick = (index: number) => {
     // setDeletingIndex(index);
     // setDeletingValue(options[index]);
-    handleDelete(label,options[index])
+    handleDelete(label, options[index]);
   };
 
   const handleEditChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,11 +60,11 @@ export default function Selector({
   const handleEditBlur = () => {
     if (editingIndex !== null) {
       const updatedOptions = [...options];
-  
+
       if (editingValue.trim() === "") {
         // Remove the option if input is empty
         updatedOptions.splice(editingIndex, 1);
-  
+
         // Also deselect if the removed option was selected
         if (options[editingIndex] === selected) {
           setSelected("");
@@ -72,13 +73,13 @@ export default function Selector({
       } else {
         // Otherwise, update the value
         updatedOptions[editingIndex] = editingValue;
-  
+
         if (options[editingIndex] === selected) {
           setSelected(editingValue);
           onChange(editingValue);
         }
       }
-  
+
       setOptions(updatedOptions);
       setEditingIndex(null);
     }
@@ -95,7 +96,8 @@ export default function Selector({
       <button
         onClick={onToggle}
         className={` p-2 px-5 rounded-sm w-full flex justify-between items-center ${
-          className || "bg-[#244B77] text-[#FFFF]"}`}
+          className || "bg-[#244B77] text-[#FFFF]"
+        }`}
       >
         {selected || "Select an option"}
         <span
@@ -105,74 +107,87 @@ export default function Selector({
         </span>
       </button>
 
-      {(isOpen && variant !== "absences") && (
-  <ul className="absolute bg-[#E7E7E7] border border-gray-300 rounded-md mt-1 w-full z-10 max-h-60 overflow-y-auto">
-    {options.map((option, index) => (
-      <li
-        key={index}
-        onClick={() => handleSelect(option)}
-        onMouseEnter={() => setHoveredIndex(index)}
-        onMouseLeave={() => setHoveredIndex(null)}
-        className="relative p-2 border-b border-gray-300 hover:bg-[#E0F6E5] cursor-pointer last:border-b-0"
-      >
-        {editingIndex === index ? (
-          <input
-            type="text"
-            value={editingValue}
-            onChange={handleEditChange}
-            onBlur={handleEditBlur}
-            autoFocus
-            className="w-full p-1 border rounded-sm bg-white"
-            onClick={(e) => e.stopPropagation()}
-          />
-        ) : (
-          <div className="flex justify-between items-center">
-            <span>{option}</span>
-            {hoveredIndex === index && (
-              <div>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleEditClick(index);
-                }}
-                className="text-sm text-gray-600 ml-2 hover:text-black"
-              >
-                <FilePenLine size={16} />
-              </button>
-               <button
-                 onClick={(e) => {
-                  e.stopPropagation();
-                  handleDeleteClick(index);
-                }}
-               className="text-sm text-gray-600 ml-2 hover:text-black"
-             >
-               <Delete size={16} />
-             </button>
-             </div>
-            )}
-          </div>
-        )}
-      </li>
-    ))}
-  </ul>
-)}
- {(isOpen && variant === "absences") && (
-  <ul className="absolute bg-white border border-gray-300 rounded-md mt-1 w-full z-10 max-h-60 overflow-y-auto">
-    {options.map((option, index) => (
-      <li
-        key={index}
-        onClick={() => handleSelect(option)}
-        onMouseEnter={() => setHoveredIndex(index)}
-        onMouseLeave={() => setHoveredIndex(null)}
-        className="bg-[#E3F0FF] text-[#244B77] relative p-2 hover:bg-[#244B77] hover:text-white cursor-pointer last:border-b-0 my-2 mx-3 rounded-md"
-      >
-          <div className="flex justify-between items-center">
-            <span>{option}</span>
-          </div>
-      </li>
-    ))}
-  </ul>
-)}
+      {isOpen && variant !== "absences" && (
+        <ul className="absolute bg-[#E7E7E7] border border-gray-300 rounded-md mt-1 w-full z-10 max-h-60 overflow-y-auto">
+          {options.map((option, index) => (
+            <li
+              key={index}
+              onClick={() => handleSelect(option)}
+              onMouseEnter={() => setHoveredIndex(index)}
+              onMouseLeave={() => setHoveredIndex(null)}
+              className="relative p-2 border-b border-gray-300 hover:bg-[#E0F6E5] cursor-pointer last:border-b-0"
+            >
+              {editingIndex === index ? (
+                <div>
+                  <input
+                    type="text"
+                    value={editingValue}
+                    onChange={handleEditChange}
+                    onBlur={handleEditBlur}
+                    autoFocus
+                    className="w-full p-1 border rounded-sm bg-white"
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                  <Button
+                    size="sm"
+                    variant="link"
+                    className="absolute right-2"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleEditClick(index);
+                    }}
+                  >
+                    <Save />
+                  </Button>
+                </div>
+              ) : (
+                <div className="flex justify-between items-center">
+                  <span>{option}</span>
+                  {hoveredIndex === index && (
+                    <div>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleEditClick(index);
+                        }}
+                        className="text-sm text-gray-600 ml-2 hover:text-black"
+                      >
+                        <FilePenLine size={16} />
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteClick(index);
+                        }}
+                        className="text-sm text-gray-600 ml-2 hover:text-black"
+                      >
+                        <Delete size={16} />
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+      {isOpen && variant === "absences" && (
+        <ul className="absolute bg-white border border-gray-300 rounded-md mt-1 w-full z-10 max-h-60 overflow-y-auto">
+          {options.map((option, index) => (
+            <li
+              key={index}
+              onClick={() => handleSelect(option)}
+              onMouseEnter={() => setHoveredIndex(index)}
+              onMouseLeave={() => setHoveredIndex(null)}
+              className="bg-[#E3F0FF] text-[#244B77] relative p-2 hover:bg-[#244B77] hover:text-white cursor-pointer last:border-b-0 my-2 mx-3 rounded-md"
+            >
+              <div className="flex justify-between items-center">
+                <span>{option}</span>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
