@@ -22,6 +22,8 @@ model User {
   password String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  absences  Absence[]
 }
 
 model Holidays {
@@ -34,4 +36,22 @@ model Projects {
   id       Int    @id @default(autoincrement())
   company     String 
   project    String 
+}
+
+
+enum AbsenceType {
+  VACATION
+  SICK
+  PERSONAL
+  PARENTAL
+}
+
+model Absence {
+  id        String       @id @default(uuid())
+  startDate DateTime
+  endDate   DateTime
+  type      AbsenceType
+
+  userId    Int
+  user      User         @relation(fields: [userId], references: [id])
 }

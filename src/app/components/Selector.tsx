@@ -14,6 +14,7 @@ interface SelectorProps {
   onToggle: () => void;
   handleDelete: (company: string, project: string) => void;
   variant?: string;
+  value?:string;
 }
 
 export default function Selector({
@@ -26,6 +27,7 @@ export default function Selector({
   onToggle,
   handleDelete,
   variant,
+  value
 }: SelectorProps) {
   const [selected, setSelected] = useState(defaultValue);
   const [options, setOptions] = useState<string[]>([]);
