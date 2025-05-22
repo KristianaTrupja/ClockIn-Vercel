@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import { User } from "@/types/user";
+import Link from "next/link";
 export default function Raport() {
   const employees = [
     { id: 1, username: "Andi Lazaj", hours: 40 },
@@ -10,6 +12,21 @@ export default function Raport() {
     { id: 5, username: "Jetmir Ahmati", hours: 42 },
     { id: 6, username: "Kristiana Trupja", hours: 42 },
   ];
+    const [employee, setEmployee] = useState<{ users: User[] } | null>(null);
+
+   useEffect(() => {
+      const fetchUser = async () => {
+        try {
+          const res = await fetch("/api/user", { cache: "no-store" });
+          const data = await res.json();
+          setEmployee(data);
+        } catch (err) {
+          console.error("Failed to fetch users:", err);
+        }
+      };
+  
+      fetchUser();
+    }, []);
   return (
     <section className="overflow-x-auto rounded-md">
       <table
@@ -25,7 +42,7 @@ export default function Raport() {
           </tr>
         </thead>
         <tbody>
-          {employees.map((emp, index) => (
+          {employee?.users.map((emp, index) => (
             <tr
               key={emp.id}
               className="border-t border-[#d1d1d1] font-semibold text-lg bg-[#E3F0FF]"
@@ -34,14 +51,16 @@ export default function Raport() {
                 {index + 1}.
               </td>
               <td className="px-4 py-2 rounded-sm">{emp.username}</td>
-              <td className="px-4 py-2 rounded-sm">{emp.hours}</td>
+              <td className="px-4 py-2 rounded-sm">22</td>
               <td className="px-4 py-2 rounded-sm">
+                <Link href={`/developer/${emp.id}`}> 
                 <Button
                   variant="secondary"
                   className="font-semibold w-full justify-start pl-10"
                 >
                   Vizito profilin
                 </Button>
+                </Link>
               </td>
             </tr>
           ))}

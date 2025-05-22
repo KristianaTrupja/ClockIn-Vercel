@@ -1,8 +1,8 @@
 "use client"
 import { signOut } from "next-auth/react";
-import BottomBar from "./components/calendar/BottomBar";
-import Calendar from "./components/calendar/Calendar";
-import TotalBar from "./components/calendar/TotalBar";
+import BottomBar from "../components/calendar/BottomBar";
+import Calendar from "../components/calendar/Calendar";
+import TotalBar from "../components/calendar/TotalBar";
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
 

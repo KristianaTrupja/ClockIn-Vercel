@@ -31,7 +31,7 @@ export default function Login() {
       if (role?.toLowerCase() === "admin") {
         router.push("/admin");
       } else if (role?.toLowerCase() === "dev") {
-        router.push("/developer");
+        router.push(`/developer/${session?.user?.id}`);
       } else {
         toast.error("No valid role assigned to this user.");
       }

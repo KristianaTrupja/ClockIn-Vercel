@@ -1,0 +1,67 @@
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
+import { authOptions } from "@/lib/auth";
+import { db } from "@/lib/db";
+import Sidebar from "../components/sidebar/Sidebar";
+import { CalendarProvider } from "../../context/CalendarContext";
+import { ProjectProvider } from "../../context/ProjectContext";
+import { WorkHoursProvider } from "../../context/WorkHoursContext";
+
+interface Props {
+  children: React.ReactNode;
+  params: { id: string };
+}
+
+export default async function DashboardLayout({ children, params }: Props) {
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    redirect("/login");
+  }
+
+  const currentUserId = session.user?.id;
+  let displayedUsername = session.user?.username || "User";
+  let displayedRole = session.user?.role || "developer";
+
+  // If viewing another user's page, fetch their info
+  if (params.id !== currentUserId) {
+    const otherUser = await db.user.findUnique({
+      where: { id: Number(params.id) }, // Convert id to a number
+      select: { username: true, role: true },
+    });
+
+    if (otherUser) {
+      displayedUsername = otherUser.username || displayedUsername;
+      displayedRole = otherUser.role || displayedRole;
+    }
+  }
+
+  return (
+    <WorkHoursProvider>
+      <ProjectProvider>
+        <CalendarProvider>
+          <section
+            className="transition-opacity duration-300 2xl:mx-50 mt-11 min-h-screen"
+            style={{ fontFamily: "var(--font-anek-bangla)" }}
+          >
+            <div className="flex justify-between mb-6 items-baseline">
+              <h2
+                className="text-4xl sm:text-6xl text-[#244B77] text-center"
+                style={{ fontFamily: "var(--font-keania-one)" }}
+              >
+                ClockIn
+              </h2>
+              <h4 className="text-[#116B16] font-semibold text-xl">
+              {displayedUsername} ({displayedRole?.toLowerCase() === "admin" ? "Admin" : "Developer"})
+              </h4>
+            </div>
+            <Sidebar />
+            <main className="ml-64 2xl:w-fit min-h-[80vh] mt-2">
+              {children}
+            </main>
+          </section>
+        </CalendarProvider>
+      </ProjectProvider>
+    </WorkHoursProvider>
+  );
+}

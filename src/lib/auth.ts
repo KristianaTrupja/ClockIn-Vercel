@@ -51,7 +51,8 @@ export const authOptions: NextAuthOptions = {
             return {
               ...token,
               username: user.username,
-              role: user.role, // ✅ include role here
+              role: user.role,
+              id: user.id,
             };
           }
           return token;
@@ -62,7 +63,8 @@ export const authOptions: NextAuthOptions = {
             user: {
               ...session.user,
               username: token.username,
-              role: token.role, // ✅ expose role to client session
+              role: token.role,
+              id: token.id,
             },
           };
         }
