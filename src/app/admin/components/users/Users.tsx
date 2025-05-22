@@ -20,7 +20,7 @@ export default function Users() {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const res = await fetch("/api/user");
+      const res = await fetch("/api/user", { cache: "no-store" });
       const data = await res.json();
       setUser(data);
     };
@@ -44,6 +44,7 @@ export default function Users() {
           method: "DELETE",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ id: emp.id }),
+          cache: "no-store"
         });
 
         if (res.ok) {
@@ -86,6 +87,7 @@ export default function Users() {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id, username, email, role }),
+        cache: "no-store"
       });
 
       if (res.ok) {
@@ -118,6 +120,7 @@ export default function Users() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData),
+      cache: "no-store"
     });
 
     if (response.ok) {
