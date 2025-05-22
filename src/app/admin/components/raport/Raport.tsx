@@ -4,14 +4,6 @@ import { Plus } from "lucide-react";
 import { User } from "@/types/user";
 import Link from "next/link";
 export default function Raport() {
-  const employees = [
-    { id: 1, username: "Andi Lazaj", hours: 40 },
-    { id: 2, username: "Emiljano Duraku", hours: 35 },
-    { id: 3, username: "Elson Gasa", hours: 42 },
-    { id: 4, username: "Ivi Beqiri", hours: 42 },
-    { id: 5, username: "Jetmir Ahmati", hours: 42 },
-    { id: 6, username: "Kristiana Trupja", hours: 42 },
-  ];
     const [employee, setEmployee] = useState<{ users: User[] } | null>(null);
 
    useEffect(() => {
