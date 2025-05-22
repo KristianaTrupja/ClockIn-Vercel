@@ -5,6 +5,7 @@ import { AddUserModal } from "./AddUserModal";
 import { UserTable } from "./UserTable";
 import { toast, Toaster } from "sonner";
 import { User, UserFormData } from "@/types/user";
+import Spinner from "@/components/ui/Spinner";
 
 export default function Users() {
   const [open, setOpen] = useState(false);
@@ -16,6 +17,7 @@ export default function Users() {
     password: "",
     role: "",
   });
+  const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<{ users: User[] } | null>(null);
 
   useEffect(() => {
@@ -23,6 +25,9 @@ export default function Users() {
       const res = await fetch("/api/user", { cache: "no-store" });
       const data = await res.json();
       setUser(data);
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 500);
     };
 
     fetchUser();
@@ -132,6 +137,8 @@ export default function Users() {
       toast.error(err.message || "Registrimi dështoi. Ju lutem provoni përsëri.");
     }
   };
+
+  if(isLoading) return <Spinner/>
 
   return (
     <section className="overflow-x-auto rounded-md">

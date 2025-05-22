@@ -4,6 +4,7 @@ import ProjectList from "./ProjectsList";
 import ProjectsForm from "./ProjectsForm";
 import { FormData, ProjectEntry } from "@/types/project";
 import { toast, Toaster } from "sonner";
+import Spinner from "@/components/ui/Spinner";
 
 function formatSelectors(data: ProjectEntry[]): Record<string, string[]> {
   return data.reduce((acc, { company, project }) => {
@@ -18,6 +19,7 @@ export default function Projects() {
   const [formData, setFormData] = useState<FormData>({ name: "", project: "" });
   const [selectors, setSelectors] = useState<Record<string, string[]>>({});
   const [data, setData] = useState<ProjectEntry[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     fetch("/api/projectList")
@@ -27,11 +29,11 @@ export default function Projects() {
           console.error("Expected an array but got:", jsonData);
           return;
         }
-
         setData(jsonData);
         setSelectors(formatSelectors(jsonData));
       })
-      .catch((err) => console.error("Failed to fetch projects", err));
+      .catch((err) => console.error("Failed to fetch projects", err))
+      .finally(() => { setTimeout(() => { setIsLoading(false);}, 500);});
   }, []);
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -150,6 +152,8 @@ export default function Projects() {
     },
     []
   );
+
+  if(isLoading) return <Spinner/>
 
   return (
     <section className="flex gap-10 font-[var(--font-anek-bangla)]">

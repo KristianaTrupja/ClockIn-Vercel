@@ -37,7 +37,7 @@ export default function Sidebar() {
               key={index}
               onClick={() => handleClick(item.tab)}
               className={cn(
-                "text-[#244B77] font-semibold text-center bg-white py-2 px-4 rounded hover:bg-[#6C99CB] hover:text-white transition",
+                "text-[#244B77] font-semibold text-center cursor-pointer bg-white py-2 px-4 rounded hover:bg-[#6C99CB] hover:text-white transition",
                 isActive && "bg-[#6C99CB] text-white"
               )}
             >

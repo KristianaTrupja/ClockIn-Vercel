@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import VocationTable from "./VocationTable";
 import AddVocationModal from "./AddVocationModal";
 import { Holiday } from "@/types/holiday";
+import Spinner from "@/components/ui/Spinner";
 
 
 export default function Vocations() {
@@ -13,12 +14,14 @@ export default function Vocations() {
   const [editedData, setEditedData] = useState({ date: "", holiday: "" });
   const [modalOpen, setModalOpen] = useState(false);
   const [newHoliday, setNewHoliday] = useState({ date: "", holiday: "" });
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     fetch("/api/vocations")
       .then((res) => res.json())
       .then((data) => setVocations(data.holidays))
-      .catch((err) => console.error("Failed to fetch holidays", err));
+      .catch((err) => console.error("Failed to fetch holidays", err))
+      .finally(() => { setTimeout(() => { setIsLoading(false);}, 500);});
   }, []);
 
   const handleEdit = (id: number) => {
@@ -109,6 +112,9 @@ export default function Vocations() {
       alert("Failed to add holiday");
     }
   };
+  
+  if(isLoading) return <Spinner/>
+
   return (
 <section className="rounded-md">
   <div className="overflow-y-auto max-h-[520px]">

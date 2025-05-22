@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import Selector from "@/app/components/Selector";
 import { User } from "@/types/user";
+import Spinner from "@/components/ui/Spinner";
 
 export default function Absences() {
   const [openSelectorId, setOpenSelectorId] = useState<string | null>(null);
@@ -10,13 +11,11 @@ export default function Absences() {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [absenceType, setAbsenceType] = useState<string | null>(null);
-
   const [employee, setEmployee] = useState<{ users: User[] } | null>(null);
   const [absences, setAbsences] = useState<any[]>([]);
-
   const absenceTypes = useMemo(() => ["VACATION", "SICK", "PERSONAL", "PARENTAL"], []);
-
   const selectorStyle = "bg-[#E3F0FF] text-[#244B77] border-[1px] border-[#244B77]";
+  const [isLoading, setIsLoading] = useState(true);
 
   const handleToggle = useCallback((id: string) => {
     setOpenSelectorId((prev) => (prev === id ? null : id));
@@ -26,7 +25,8 @@ export default function Absences() {
     fetch("/api/absences")
       .then((res) => res.json())
       .then((data) => setAbsences(data.absences || []))
-      .catch((err) => console.error("Failed to fetch absences:", err));
+      .catch((err) => console.error("Failed to fetch absences:", err))
+      .finally(() => { setTimeout(() => { setIsLoading(false);}, 500);});
   }, []);
 
   useEffect(() => {
@@ -84,6 +84,8 @@ export default function Absences() {
       alert("Error creating absence");
     }
   };
+
+  if(isLoading) return <Spinner/>
 
   return (
     <div className="max-w-2/3 2xl:max-w-1/2">

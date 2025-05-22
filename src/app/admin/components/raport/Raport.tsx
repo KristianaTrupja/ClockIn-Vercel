@@ -3,22 +3,31 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { User } from "@/types/user";
 import Link from "next/link";
+import Spinner from "@/components/ui/Spinner";
+
 export default function Raport() {
     const [employee, setEmployee] = useState<{ users: User[] } | null>(null);
-
+    const [isLoading, setIsLoading] = useState(true);
    useEffect(() => {
       const fetchUser = async () => {
         try {
           const res = await fetch("/api/user", { cache: "no-store" });
           const data = await res.json();
           setEmployee(data);
+          setTimeout(() => {
+            setIsLoading(false);
+          }, 500);
         } catch (err) {
-          console.error("Failed to fetch users:", err);
+          console.error("Failed to fetch users:", err)
+
         }
       };
   
       fetchUser();
     }, []);
+
+    if(isLoading) return <Spinner/>
+
   return (
     <section className="overflow-x-auto rounded-md">
       <table
