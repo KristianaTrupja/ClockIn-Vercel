@@ -13,6 +13,7 @@ interface Props {
 }
 
 export default async function DashboardLayout({ children, params }: Props) {
+  const resolveParams = await params;
   const session = await getServerSession(authOptions);
 
   if (!session) {
@@ -24,7 +25,7 @@ export default async function DashboardLayout({ children, params }: Props) {
   let displayedRole = session.user?.role || "developer";
 
   // If viewing another user's page, fetch their info
-  if (params.id !== currentUserId) {
+  if (resolveParams.id !== currentUserId) {
     const otherUser = await db.user.findUnique({
       where: { id: Number(params.id) }, // Convert id to a number
       select: { username: true, role: true },
