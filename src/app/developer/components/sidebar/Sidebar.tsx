@@ -85,7 +85,7 @@ export default function Sidebar() {
 
     [...sidebarProjects, ...selected].forEach(({ company, projects }) => {
       if (!mergedMap[company]) mergedMap[company] = new Map();
-      projects.forEach(({ projectKey, title }) =>
+      projects.forEach(({ projectKey, title }: { projectKey: string; title: string }) =>
         mergedMap[company].set(projectKey, title)
       );
     });

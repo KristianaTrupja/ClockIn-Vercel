@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import SidebarList from "./SidebarList";
-import { ProjectData } from "@/app/lib/api/projects";
+import { ProjectData } from "@/types/project";
 
 export default function SidebarContent  ({ sidebarProjects, openModal }: { sidebarProjects: ProjectData[], openModal: () => void }) {
     return(

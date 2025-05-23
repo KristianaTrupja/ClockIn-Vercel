@@ -1,9 +1,9 @@
 "use client";
 import { useCalendar } from "@/app/context/CalendarContext";
 import { useWorkHours } from "@/app/context/WorkHoursContext";
-import { ProjectData } from "@/app/lib/api/projects";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Delete } from "lucide-react";
+import { ProjectData } from "@/types/project";
 
 export default function TotalBar() {
   const { month, year } = useCalendar();

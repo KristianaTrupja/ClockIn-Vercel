@@ -1,4 +1,4 @@
-import { ProjectData } from "@/app/lib/api/projects";
+import { ProjectData } from "@/types/project";
 import SidebarItem from "./SidebarItem";
 
 interface SidebarListProps {

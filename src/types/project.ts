@@ -8,11 +8,13 @@ export interface ProjectEntry {
   company: string;
   project: string;
 }
-export interface ProjectData {
+export type Project = {
+  title: string;
+  projectKey: string;
+};
+
+export type ProjectData = {
   company: string;
-  projects: {
-    title: string;
-    projectKey: string;
-  }[];
-}
+  projects: Project[];
+};
 

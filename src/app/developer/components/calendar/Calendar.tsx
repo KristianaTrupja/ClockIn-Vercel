@@ -5,13 +5,13 @@ import WorkDay from "./WorkDay";
 import { useCalendar } from "@/app/context/CalendarContext";
 import { getDaysInMonth } from "@/app/utils/dateUtils";
 import { useProjects } from "@/app/context/ProjectContext";
-import TotalBar from "./TotalBar";
+import { Project} from "@/types/project";
 
 export default function Calendar() {
   const { year, month } = useCalendar();
   const daysArray = getDaysInMonth(year, month);
   const { sidebarProjects } = useProjects();
-
+console.log(sidebarProjects,"sidebarProjects")
   return (
     <div>
       <TopBar />
@@ -22,7 +22,7 @@ export default function Calendar() {
             <div className="flex items-center h-10 px-2 font-semibold bg-gray-200 border-t border-b border-gray-300" />
 
             {/* Project rows */}
-            {companyBlock.projects.map((proj, projectIndex) => (
+            {companyBlock.projects.map((proj: Project, projectIndex: number) => (
               <div className="flex odd:border-t odd:border-b last:border-b border-gray-300" key={`${companyIndex}-${projectIndex}`}>
                 {daysArray.map((day) => (
                   <WorkDay

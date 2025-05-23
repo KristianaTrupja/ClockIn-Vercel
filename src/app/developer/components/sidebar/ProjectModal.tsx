@@ -1,7 +1,7 @@
 import { Modal } from "@/app/components/ui/Modal";
 import { Button } from "@/components/ui/button";
+import { ProjectData } from "@/types/project";
 import clsx from "clsx";
-import { ProjectData } from "@/app/lib/api/projects";
 
 interface ProjectModalProps {
   isOpen: boolean;
