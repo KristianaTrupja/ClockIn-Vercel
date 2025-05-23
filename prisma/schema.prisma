@@ -15,16 +15,18 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 model User {
-  id       Int    @id @default(autoincrement())
-  username     String @unique
-  email    String @unique
-  role     String
-  password String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         Int         @id @default(autoincrement())
+  username   String      @unique
+  email      String      @unique
+  role       String
+  password   String
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
 
-  absences  Absence[]
+  absences   Absence[]
+  workHours  WorkHours[]
 }
+
 
 model Holidays {
   id       Int    @id @default(autoincrement())
@@ -33,10 +35,13 @@ model Holidays {
 }
 
 model Projects {
-  id       Int    @id @default(autoincrement())
-  company     String 
-  project    String 
+  id       Int       @id @default(autoincrement())
+  company  String
+  project  String
+
+  workHours WorkHours[]
 }
+
 
 
 enum AbsenceType {
@@ -55,3 +60,19 @@ model Absence {
   userId    Int
   user      User         @relation(fields: [userId], references: [id])
 }
+
+model WorkHours {
+  id        Int      @id @default(autoincrement())
+  date      DateTime
+  hours     Float
+  note      String?  // Optional note
+
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+
+  projectId Int
+  project   Projects @relation(fields: [projectId], references: [id])
+
+  @@unique([userId, date, projectId]) // Prevent duplicate entries for the same user/project/date
+}
+
