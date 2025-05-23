@@ -4,7 +4,15 @@ export interface FormData {
 }
 
 export interface ProjectEntry {
-  id: string;
+  id: number;
   company: string;
   project: string;
 }
+export interface ProjectData {
+  company: string;
+  projects: {
+    title: string;
+    projectKey: string;
+  }[];
+}
+

@@ -59,7 +59,7 @@ export default function Raport() {
                   variant="secondary"
                   className="font-semibold w-full justify-start pl-10"
                 >
-                  Vizito profilin
+                  Shiko oret
                 </Button>
                 </Link>
               </td>

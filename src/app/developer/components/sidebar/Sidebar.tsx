@@ -1,12 +1,12 @@
 'use client';
 
 import { useState, useCallback, useEffect } from "react";
-import { fetchProjects, ProjectData } from "@/app/lib/api/projects";
 import { useProjects } from "@/app/context/ProjectContext";
 import { useCalendar } from "@/app/context/CalendarContext";
 import SidebarContent from "./SidebarContent";
 import SidebarHeader from "./SidebarHeader";
 import ProjectModalContainer from "./ProjectModalContainer";
+import { ProjectData, ProjectEntry } from "@/types/project";
 
 export default function Sidebar() {
   const { setSidebarProjects, sidebarProjects } = useProjects();
@@ -15,32 +15,52 @@ export default function Sidebar() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProjects, setSelectedProjects] = useState<string[]>([]);
 
-  // Fetch projects on mount
+  // Group flat project data by company
+  const groupProjects = (entries: ProjectEntry[]): ProjectData[] => {
+    const grouped: Record<string, { title: string; projectKey: string }[]> = {};
+
+    entries.forEach(({ id, company, project }) => {
+      if (!grouped[company]) grouped[company] = [];
+      grouped[company].push({
+        title: project,
+        projectKey: `PID-${id}`,
+      });
+    });
+
+    return Object.entries(grouped).map(([company, projects]) => ({
+      company,
+      projects,
+    }));
+  };
+
   useEffect(() => {
-    fetchProjects().then(setProjectsData);
+    const fetchProjects = async () => {
+      try {
+        const res = await fetch("/api/projectList");
+        const data: ProjectEntry[] = await res.json();
+        setProjectsData(groupProjects(data));
+      } catch (err) {
+        console.error("Failed to fetch projects:", err);
+      }
+    };
+
+    fetchProjects();
   }, []);
 
-  // Helper for consistent localStorage key using month and year
   const getStorageKey = useCallback(() => {
-    const keyDate = `${year}-${month}`;
-    return `sidebar-projects-${keyDate}`;
+    return `sidebar-projects-${year}-${month}`;
   }, [year, month]);
 
-  // Load saved projects from localStorage if not already in context
   useEffect(() => {
     const key = getStorageKey();
     const saved = localStorage.getItem(key);
     const parsed = saved ? JSON.parse(saved) : [];
 
-    const isEqual =
-      JSON.stringify(parsed) === JSON.stringify(sidebarProjects);
-
-    if (!isEqual) {
+    if (JSON.stringify(parsed) !== JSON.stringify(sidebarProjects)) {
       setSidebarProjects(parsed);
     }
-  }, [getStorageKey, sidebarProjects]);
+  }, [getStorageKey, sidebarProjects, setSidebarProjects]);
 
-  // Handle project selection toggle
   const toggleProjectSelection = (company: string, projectKey: string) => {
     const key = `${company}-${projectKey}`;
     setSelectedProjects((prev) =>
@@ -48,7 +68,6 @@ export default function Sidebar() {
     );
   };
 
-  // Handle submit for selected projects
   const handleSubmit = () => {
     const updatedSidebarProjects: ProjectData[] = [];
 
@@ -86,18 +105,19 @@ export default function Sidebar() {
 
     const key = getStorageKey();
     localStorage.setItem(key, JSON.stringify(mergedProjects));
-
     setSidebarProjects(mergedProjects);
     setSelectedProjects([]);
     setIsModalOpen(false);
-
     window.location.reload();
   };
 
   return (
     <>
       <SidebarHeader />
-      <SidebarContent sidebarProjects={sidebarProjects} openModal={() => setIsModalOpen(true)} />
+      <SidebarContent
+        sidebarProjects={sidebarProjects}
+        openModal={() => setIsModalOpen(true)}
+      />
       <ProjectModalContainer
         isModalOpen={isModalOpen}
         closeModal={() => {
