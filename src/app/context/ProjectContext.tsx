@@ -1,7 +1,7 @@
 "use client";
 import { createContext, useContext, useState, ReactNode } from "react";
-import { ProjectData } from "@/app/lib/api/projects";
 import { useWorkHours } from "./WorkHoursContext";
+import { ProjectData } from "@/types/project";
 
 type ProjectContextType = {
   sidebarProjects: ProjectData[];
