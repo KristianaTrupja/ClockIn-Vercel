@@ -66,7 +66,7 @@ export default function TotalBar() {
         </div>
         {parsedProjects.map((group) => (
           <div key={group.company} className="w-full">
-            <div className="project-field__name flex items-center w-full p-[18.5px] font-semibold bg-gray-200 border-b-[1px]"/>
+            <div className="project-field__name flex items-center w-full h-[40px] font-semibold bg-gray-200 border-b"/>
             {group.projects.map((proj) => {
               const total = getTotalHoursForProjectInMonth(userId, proj.projectKey, month + 1, year);
               return (
