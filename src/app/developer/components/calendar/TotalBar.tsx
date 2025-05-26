@@ -59,19 +59,19 @@ export default function TotalBar() {
   }
 
   return (
-    <div className="flex flex-col justify-between border-[1px] border-gray-300 bg-blue-50">
+    <div className="flex flex-col justify-between border-gray-300 bg-blue-50">
       <div className="flex flex-col overflow-auto items-center">
-        <div className="border-gray-300 w-full border-b h-10 flex justify-center items-center text-black font-semibold">
+        <div className="border-gray-300 w-full border-b border-t border-r h-10 flex justify-center items-center text-black font-semibold">
           Total
         </div>
         {parsedProjects.map((group) => (
-          <div key={group.company} className="w-full">
-            <div className="project-field__name flex items-center w-full h-[40px] font-semibold bg-gray-200 border-b"/>
+          <div key={group.company} className="w-full project-field">
+            <div className="project-field__name flex items-center w-full h-[40px] font-semibold bg-gray-200 border-b border-gray-300 border-r"/>
             {group.projects.map((proj) => {
               const total = getTotalHoursForProjectInMonth(userId, proj.projectKey, month + 1, year);
               return (
                 <div
-                  className="total-field flex h-10 gap-1 items-center justify-center border-b border-gray-300 relative"
+                  className="total-field flex h-10 gap-1 items-center justify-center border-b border-gray-300 relative px-8 border-r"
                   key={proj.projectKey}
                 >
                   <div>{total.toFixed(2)}</div>
@@ -85,7 +85,7 @@ export default function TotalBar() {
           </div>
         ))}
       </div>
-      <div className="border-[1px] border-b-0 border-l-0 border-r-0 border-gray-300 w-full h-10 flex justify-center items-center text-black font-semibold">
+      <div className="border-b border-l border-r border-gray-300 w-full h-10 flex justify-center items-center text-black font-semibold">
         {sum.toFixed(2)}
       </div>
     </div>

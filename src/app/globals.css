@@ -132,12 +132,3 @@ body.modal-open {
   overflow: hidden;
 }
 
-.w-full:last-of-type .total-field:last-of-type {
-  border-bottom: 1px solid #D1D5DB;
-  padding: 20px;
-}
-
-.w-full:last-of-type .project-field__name {
-  border-top: 1px solid #D1D5DB;
-  padding: 18.5px;
-}

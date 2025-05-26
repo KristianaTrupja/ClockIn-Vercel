@@ -31,7 +31,7 @@ export default function Calendar() {
             <div className="flex items-center h-10 px-2 font-semibold bg-gray-200 border-gray-300"/>
             {/* Project rows */}
             {companyBlock.projects.map((proj: Project) => (
-              <div className="flex border-gray-300 " key={proj.projectKey}>
+              <div className="flex" key={proj.projectKey}>
                 {daysArray.map((day) => {
                   const date = formatDate(year, month, day);
                   return (
