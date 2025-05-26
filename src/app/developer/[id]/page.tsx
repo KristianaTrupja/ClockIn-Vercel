@@ -12,7 +12,7 @@ export default function Developer() {
     };
   return (
     <>
-    <section style={{ fontFamily: "var(--font-anek-bangla)" }} className="relative flex flex-col justify-between min-h-[80vh]">
+    <section style={{ fontFamily: "var(--font-anek-bangla)" }} className="relative flex flex-col justify-between">
     <Button  size="sm" onClick={onSignout} className="absolute top-[-85px] right-0"><LogOut/></Button>
       <div className="flex">
         <Calendar />

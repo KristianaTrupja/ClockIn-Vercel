@@ -19,11 +19,11 @@ console.log(sidebarProjects,"sidebarProjects")
         {sidebarProjects.map((companyBlock, companyIndex) => (
           <React.Fragment key={companyIndex}>
             {/* Company label row */}
-            <div className="flex items-center h-10 px-2 font-semibold bg-gray-200 border-t border-b border-gray-300" />
+            <div className="flex items-center h-10 px-2 font-semibold bg-gray-200 border-gray-300" />
 
             {/* Project rows */}
             {companyBlock.projects.map((proj: Project, projectIndex: number) => (
-              <div className="flex odd:border-t odd:border-b last:border-b border-gray-300" key={`${companyIndex}-${projectIndex}`}>
+              <div className="flex border-gray-300 " key={`${companyIndex}-${projectIndex}`}>
                 {daysArray.map((day) => (
                   <WorkDay
                     key={`${proj.projectKey}-${day.toString()}`}

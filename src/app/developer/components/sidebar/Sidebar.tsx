@@ -4,7 +4,6 @@ import { useState, useEffect, useCallback } from 'react';
 import { useProjects } from '@/app/context/ProjectContext';
 import { useCalendar } from '@/app/context/CalendarContext';
 import SidebarContent from './SidebarContent';
-import SidebarHeader from './SidebarHeader';
 import ProjectModalContainer from './ProjectModalContainer';
 import { ProjectData, ProjectEntry } from '@/types/project';
 
@@ -109,7 +108,6 @@ export default function Sidebar() {
 
   return (
     <>
-      <SidebarHeader />
       <SidebarContent
         sidebarProjects={sidebarProjects}
         openModal={() => setIsModalOpen(true)}
