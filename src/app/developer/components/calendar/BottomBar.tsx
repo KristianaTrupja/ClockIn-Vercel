@@ -13,6 +13,7 @@ export default function BottomBar() {
     const daysArray = getDaysInMonth(year, month);
     setDays(daysArray);
   }, [month, year]);
+
   return (
     <div className="flex items-center gap-1">
       {days.map((day) => {
@@ -23,12 +24,14 @@ export default function BottomBar() {
           2,
           "0"
         )}-${String(day).padStart(2, "0")}`;
-        const totalHours = getTotalHoursForDay(formattedDate);
+        const totalHours = getTotalHoursForDay(formattedDate, "user1"); // Replace "user1" with dynamic ID if needed
+        const bgColor = totalHours > 0 ? "bg-blue-100" : "bg-white";
 
         return (
           <div
             key={day}
-            className={`border-t-5 border-gray-300 w-9 h-6 flex justify-center gap-1 items-center text-xs pt-1 ${weekendClass}`}
+            title={formattedDate}
+            className={`border-t-5 border-gray-300 w-9 h-6 flex justify-center items-center text-xs pt-1 ${weekendClass} ${bgColor}`}
           >
             {totalHours.toFixed(2)}
           </div>

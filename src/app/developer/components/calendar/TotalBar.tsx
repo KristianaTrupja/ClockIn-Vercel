@@ -4,11 +4,16 @@ import { useWorkHours } from "@/app/context/WorkHoursContext";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Delete } from "lucide-react";
 import { ProjectData } from "@/types/project";
+import { usePathname } from "next/navigation";
 
 export default function TotalBar() {
+  const pathname = usePathname();
+
+  const userId = pathname.split("/")[2];
+
   const { month, year } = useCalendar();
   const { getTotalHoursForProjectInMonth } = useWorkHours();
-  const [parsedProjects, setParsedProjects] = useState<ProjectData[] | null>(null);
+  const [parsedProjects, setParsedProjects] = useState<ProjectData[]>([]);
 
   const getStorageKey = useCallback(() => {
     const keyDate = `${year}-${month}`;
@@ -18,38 +23,40 @@ export default function TotalBar() {
   useEffect(() => {
     const key = getStorageKey();
     const saved = localStorage.getItem(key);
-    const parsed = saved ? (JSON.parse(saved) as ProjectData[]) : null;
+    const parsed = saved ? (JSON.parse(saved) as ProjectData[]) : [];
     setParsedProjects(parsed);
   }, [getStorageKey]);
 
   const sum = useMemo(() => {
-    if (!parsedProjects) return 0;
+    if (!userId) return 0;
     return parsedProjects.reduce((acc, group) => {
       return (
         acc +
         group.projects.reduce((subAcc, proj) => {
-          return subAcc + getTotalHoursForProjectInMonth(proj.projectKey, month + 1, year);
+          return subAcc + getTotalHoursForProjectInMonth(userId, proj.projectKey, month + 1, year);
         }, 0)
       );
     }, 0);
-  }, [parsedProjects, getTotalHoursForProjectInMonth, month, year]);
+  }, [parsedProjects, getTotalHoursForProjectInMonth, month, year, userId]);
 
-  // Function to remove project from parsedProjects and update localStorage
-  const removeProject = (projectKey: string) => {
-    const updatedProjects = parsedProjects?.map((group) => {
-      return {
-        ...group,
-        projects: group.projects.filter((proj) => proj.projectKey !== projectKey),
-      };
-    }).filter((group) => group.projects.length > 0); // Remove groups with no projects
+  const removeProject = useCallback(
+    (projectKey: string) => {
+      const updatedProjects = parsedProjects
+        .map((group) => ({
+          ...group,
+          projects: group.projects.filter((proj) => proj.projectKey !== projectKey),
+        }))
+        .filter((group) => group.projects.length > 0);
 
-    setParsedProjects(updatedProjects || []);
-    const key = getStorageKey();
-    localStorage.setItem(key, JSON.stringify(updatedProjects));
+      setParsedProjects(updatedProjects);
+      localStorage.setItem(getStorageKey(), JSON.stringify(updatedProjects));
+    },
+    [parsedProjects, getStorageKey]
+  );
 
-    // Refresh the page to reflect changes
-    window.location.reload();
-  };
+  if (!userId) {
+    return <div className="p-4 text-red-600">User ID not found in URL.</div>;
+  }
 
   return (
     <div className="flex flex-col justify-between h-[76vh] border-[1px] border-gray-300 bg-blue-50">
@@ -57,20 +64,20 @@ export default function TotalBar() {
         <div className="border-gray-300 w-full border-b h-[41px] flex justify-center items-center text-black font-semibold p-2">
           Total
         </div>
-        {parsedProjects?.map((projects, index) => (
-          <div key={index} className="w-full">
-            <div className="project-field__name flex items-center w-full p-[18.5px] font-semibold bg-gray-200 border-b-[1px]" />
-            {projects.projects.map((proj, projectIndex) => {
-              const total = getTotalHoursForProjectInMonth(proj.projectKey, month + 1, year);
+        {parsedProjects.map((group) => (
+          <div key={group.company} className="w-full">
+            <div className="project-field__name flex items-center w-full p-[18.5px] font-semibold bg-gray-200 border-b-[1px]"/>
+            {group.projects.map((proj) => {
+              const total = getTotalHoursForProjectInMonth(userId, proj.projectKey, month + 1, year);
               return (
                 <div
                   className="total-field flex h-10 gap-1 items-center justify-between border-t-[1px] border-gray-300 relative p-[20px]"
-                  key={`${index}-${projectIndex}`}
+                  key={proj.projectKey}
                 >
                   <div>{total.toFixed(2)}</div>
                   <Delete
                     className="w-5 h-5 text-red-500 cursor-pointer"
-                    onClick={() => removeProject(proj.projectKey)} // Call removeProject on click
+                    onClick={() => removeProject(proj.projectKey)}
                   />
                 </div>
               );
