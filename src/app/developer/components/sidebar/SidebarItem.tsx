@@ -18,7 +18,7 @@ export default function SidebarItem({ company, projects }: SidebarItemProps) {
         {projects.map((project) => (
           <li
             key={project.projectKey}
-            className="bg-[#6C99CB] h-[40px] px-4 flex items-center text-white pl-5 border-b-[1px] border-[#244B77]"
+            className="bg-[#6C99CB] h-[40px] px-4 flex items-center text-white pl-5 border-b border-[#244B77]"
           >
             {project.title}
           </li>

@@ -59,9 +59,9 @@ export default function TotalBar() {
   }
 
   return (
-    <div className="flex flex-col justify-between border-gray-300 bg-blue-50">
+    <div className="flex flex-col justify-between border-gray-300 bg-blue-50 min-w-[70px]">
       <div className="flex flex-col overflow-auto items-center">
-        <div className="border-gray-300 w-full border-b border-t border-r h-10 flex justify-center items-center text-black font-semibold">
+        <div className="border-gray-300 w-full border h-10 flex justify-center items-center text-black font-semibold">
           Total
         </div>
         {parsedProjects.map((group) => (
@@ -85,7 +85,7 @@ export default function TotalBar() {
           </div>
         ))}
       </div>
-      <div className="border-b border-l border-r border-gray-300 w-full h-10 flex justify-center items-center text-black font-semibold">
+      <div className="border border-gray-300 w-full h-10 flex justify-center items-center text-black font-semibold">
         {sum.toFixed(2)}
       </div>
     </div>

@@ -7,6 +7,7 @@ import { CalendarProvider } from "../../context/CalendarContext";
 import { ProjectProvider } from "../../context/ProjectContext";
 import { WorkHoursProvider } from "../../context/WorkHoursContext";
 import SidebarHeader from '../components/sidebar/SidebarHeader';
+import SignOutButton from "../components/signoutbutton/SignOutButton";
 
 interface Props {
   children: React.ReactNode;
@@ -43,19 +44,22 @@ export default async function DashboardLayout({ children, params }: Props) {
       <ProjectProvider>
         <CalendarProvider>
           <section
-            className="transition-opacity duration-300 2xl:mx-50 mt-11 min-h-screen"
+            className="transition-opacity duration-300 2xl:mx-50 mt-11 min-h-screen w-max"
             style={{ fontFamily: "var(--font-anek-bangla)" }}
           >
-            <div className="flex justify-between mb-6 items-baseline">
+            <div className="flex justify-between mb-6 items-center">
               <h2
                 className="text-4xl sm:text-6xl text-[#244B77] text-center"
                 style={{ fontFamily: "var(--font-keania-one)" }}
               >
                 ClockIn
               </h2>
-              <h4 className="text-[#116B16] font-semibold text-xl">
-              {displayedUsername} ({displayedRole?.toLowerCase() === "admin" ? "Admin" : "Developer"})
-              </h4>
+              <div className="user-name flex items-center">
+                <h4 className="text-[#116B16] font-semibold text-xl mr-10">
+                  {displayedUsername} ({displayedRole?.toLowerCase() === "admin" ? "Admin" : "Developer"})
+                </h4>
+                <SignOutButton />
+              </div>
             </div>
             <SidebarHeader/>
             <main className="2xl:w-fit flex">
