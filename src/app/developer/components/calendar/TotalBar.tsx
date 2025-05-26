@@ -59,9 +59,9 @@ export default function TotalBar() {
   }
 
   return (
-    <div className="flex flex-col justify-between h-[76vh] border-[1px] border-gray-300 bg-blue-50">
+    <div className="flex flex-col justify-between border-[1px] border-gray-300 bg-blue-50">
       <div className="flex flex-col overflow-auto items-center">
-        <div className="border-gray-300 w-full border-b h-[41px] flex justify-center items-center text-black font-semibold p-2">
+        <div className="border-gray-300 w-full border-b h-10 flex justify-center items-center text-black font-semibold">
           Total
         </div>
         {parsedProjects.map((group) => (
@@ -71,7 +71,7 @@ export default function TotalBar() {
               const total = getTotalHoursForProjectInMonth(userId, proj.projectKey, month + 1, year);
               return (
                 <div
-                  className="total-field flex h-10 gap-1 items-center justify-between border-t-[1px] border-gray-300 relative p-[20px]"
+                  className="total-field flex h-10 gap-1 items-center justify-center border-b border-gray-300 relative"
                   key={proj.projectKey}
                 >
                   <div>{total.toFixed(2)}</div>

@@ -11,14 +11,14 @@ interface SidebarItemProps {
 export default function SidebarItem({ company, projects }: SidebarItemProps) {
   return (
     <div>
-      <h3 className="bg-[#244B77] w-full p-[7px] text-white flex items-center justify-between border-b border-t border-[#244B77]">
+      <h3 className="bg-[#244B77] w-full h-10 text-white flex items-center justify-between border-[#244B77] px-2">
         {company} <CircleArrowDown />
       </h3>
       <ul>
         {projects.map((project) => (
           <li
             key={project.projectKey}
-            className="bg-[#6C99CB] p-[7.7px] text-white pl-5 border-b-[1px] border-[#244B77]"
+            className="bg-[#6C99CB] h-[40px] px-4 flex items-center text-white pl-5 border-b-[1px] border-[#244B77]"
           >
             {project.title}
           </li>

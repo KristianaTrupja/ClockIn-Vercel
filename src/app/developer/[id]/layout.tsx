@@ -6,6 +6,7 @@ import Sidebar from "../components/sidebar/Sidebar";
 import { CalendarProvider } from "../../context/CalendarContext";
 import { ProjectProvider } from "../../context/ProjectContext";
 import { WorkHoursProvider } from "../../context/WorkHoursContext";
+import SidebarHeader from '../components/sidebar/SidebarHeader';
 
 interface Props {
   children: React.ReactNode;
@@ -56,8 +57,9 @@ export default async function DashboardLayout({ children, params }: Props) {
               {displayedUsername} ({displayedRole?.toLowerCase() === "admin" ? "Admin" : "Developer"})
               </h4>
             </div>
-            <Sidebar />
-            <main className="ml-64 2xl:w-fit min-h-[80vh] mt-2">
+            <SidebarHeader/>
+            <main className="2xl:w-fit flex">
+              <Sidebar />
               {children}
             </main>
           </section>
