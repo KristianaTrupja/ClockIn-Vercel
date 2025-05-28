@@ -1,18 +1,19 @@
-'use client';
+"use client";
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+
+type WorkEntry = {
+  hours: number;
+  note?: string;
+};
 
 type WorkHours = {
   [date: string]: {
     [userId: string]: {
-      [projectKey: string]: {
-        hours: number;
-        note?: string;
-      };
+      [projectKey: string]: WorkEntry;
     };
   };
 };
-
 
 type WorkHoursContextType = {
   workHours: WorkHours;
@@ -22,7 +23,7 @@ type WorkHoursContextType = {
     projectKey: string,
     hours: number,
     note?: string
-  ) => void;
+  ) => Promise<void>;
   getTotalHoursForDay: (date: string, userId: string) => number;
   getTotalHoursForProjectInMonth: (
     userId: string,
@@ -30,6 +31,7 @@ type WorkHoursContextType = {
     month: number,
     year: number
   ) => number;
+  reloadWorkHours: (userId: string, month?: number, year?: number) => Promise<void>;
 };
 
 const WorkHoursContext = createContext<WorkHoursContextType | undefined>(undefined);
@@ -37,24 +39,55 @@ const WorkHoursContext = createContext<WorkHoursContextType | undefined>(undefin
 export function WorkHoursProvider({ children }: { children: ReactNode }) {
   const [workHours, setWorkHours] = useState<WorkHours>({});
 
-  useEffect(() => {
-    const stored = localStorage.getItem('workHours');
-    if (stored) {
-      setWorkHours(JSON.parse(stored));
+  const fetchWorkHours = async (userId: string, month?: number, year?: number) => {
+    try {
+      const params = new URLSearchParams({ userId });
+      if (month && year) {
+        params.append("month", month.toString());
+        params.append("year", year.toString());
+      }
+
+      const res = await fetch(`/api/workhours?${params.toString()}`);
+      if (!res.ok) {
+        console.error("Failed to fetch work hours");
+        return;
+      }
+
+      const data = await res.json();
+      const transformed: WorkHours = {};
+
+      for (const entry of data.workhours) {
+        const dateStr = entry.date.split("T")[0];
+        const userIdStr = String(entry.userId);
+        const projectKey = `project-${entry.projectId}`;
+
+        if (!transformed[dateStr]) transformed[dateStr] = {};
+        if (!transformed[dateStr][userIdStr]) transformed[dateStr][userIdStr] = {};
+
+        transformed[dateStr][userIdStr][projectKey] = {
+          hours: entry.hours,
+          note: entry.note,
+        };
+      }
+
+      setWorkHours(transformed);
+    } catch (error) {
+      console.error("Error fetching work hours:", error);
     }
+  };
+
+  useEffect(() => {
+    fetchWorkHours("1"); // You might want to make userId dynamic later
   }, []);
 
-  useEffect(() => {
-    localStorage.setItem('workHours', JSON.stringify(workHours));
-  }, [workHours]);
-
-  const setWorkHoursForProject = (
+  const setWorkHoursForProject = async (
     date: string,
     userId: string,
     projectKey: string,
     hours: number,
     note?: string
   ) => {
+    // Update local state optimistically
     setWorkHours((prev) => ({
       ...prev,
       [date]: {
@@ -70,7 +103,7 @@ export function WorkHoursProvider({ children }: { children: ReactNode }) {
   const getTotalHoursForDay = (date: string, userId: string): number => {
     const userData = workHours[date]?.[userId];
     if (!userData) return 0;
-    return Object.values(userData).reduce((total, entry) => total + (entry.hours || 0), 0);
+    return Object.values(userData).reduce((sum, { hours }) => sum + hours, 0);
   };
 
   const getTotalHoursForProjectInMonth = (
@@ -80,19 +113,17 @@ export function WorkHoursProvider({ children }: { children: ReactNode }) {
     year: number
   ): number => {
     let total = 0;
-
-    const filteredEntries = Object.entries(workHours).filter(([date]) => {
-      const d = new Date(date);
-      return d.getMonth() === month - 1 && d.getFullYear() === year;
-    });
-
-    for (const [_, dayEntry] of filteredEntries) {
-      if (dayEntry[userId]?.[projectKey]?.hours) {
-        total += dayEntry[userId][projectKey].hours;
+    for (const [dateStr, users] of Object.entries(workHours)) {
+      const date = new Date(dateStr);
+      if (date.getMonth() === month - 1 && date.getFullYear() === year) {
+        total += users[userId]?.[projectKey]?.hours ?? 0;
       }
     }
-
     return total;
+  };
+
+  const reloadWorkHours = async (userId: string, month?: number, year?: number) => {
+    await fetchWorkHours(userId, month, year);
   };
 
   return (
@@ -102,13 +133,13 @@ export function WorkHoursProvider({ children }: { children: ReactNode }) {
         setWorkHoursForProject,
         getTotalHoursForDay,
         getTotalHoursForProjectInMonth,
+        reloadWorkHours,
       }}
     >
       {children}
     </WorkHoursContext.Provider>
   );
 }
-
 
 export function useWorkHours() {
   const context = useContext(WorkHoursContext);
