@@ -133,10 +133,8 @@ export function WorkHoursProvider({ children }: { children: ReactNode }) {
       const normalizedProjectKey = normalizeProjectKey(projectKey);
     for (const [dateStr, users] of Object.entries(workHours)) {
       const date = new Date(dateStr);
-      console.log(date, month, year, date.getMonth(), date.getFullYear());
       if (date.getMonth() === month - 1 && date.getFullYear() === year) {
         total += users[userId]?.[normalizedProjectKey]?.hours ?? 0;
-        console.log(users[userId], projectKey, users[userId]?.[projectKey]?.hours, total," total hours for project in month");
       }
     }
     return total;

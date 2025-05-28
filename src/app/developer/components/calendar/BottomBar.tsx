@@ -1,13 +1,20 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useCalendar } from "@/app/context/CalendarContext";
 import { getDaysInMonth, isWeekend } from "@/app/utils/dateUtils";
 import { useWorkHours } from "@/app/context/WorkHoursContext";
+import { usePathname } from "next/navigation";
 
 export default function BottomBar() {
   const { month, year } = useCalendar();
   const [days, setDays] = useState<string[]>([]);
   const { getTotalHoursForDay } = useWorkHours();
+const pathname = usePathname();
+
+  const userId = useMemo(() => {
+    const segments = pathname?.split("/") || [];
+    return segments[2] || "";
+  }, [pathname]);
 
   useEffect(() => {
     const daysArray = getDaysInMonth(year, month);
@@ -24,7 +31,7 @@ export default function BottomBar() {
           2,
           "0"
         )}-${String(day).padStart(2, "0")}`;
-        const totalHours = getTotalHoursForDay(formattedDate, "user1"); // Replace "user1" with dynamic ID if needed
+        const totalHours = getTotalHoursForDay(formattedDate, userId);
         const bgColor = totalHours > 0 ? "bg-blue-100" : "bg-white";
 
         return (
