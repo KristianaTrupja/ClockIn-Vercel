@@ -1,6 +1,13 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+  useCallback,
+} from "react";
 
 type WorkEntry = {
   hours: number;
@@ -32,53 +39,62 @@ type WorkHoursContextType = {
     year: number
   ) => number;
   reloadWorkHours: (userId: string, month?: number, year?: number) => Promise<void>;
+  loading: boolean;
 };
 
 const WorkHoursContext = createContext<WorkHoursContextType | undefined>(undefined);
 
 export function WorkHoursProvider({ children }: { children: ReactNode }) {
   const [workHours, setWorkHours] = useState<WorkHours>({});
+  const [loading, setLoading] = useState(false);
 
-  const fetchWorkHours = async (userId: string, month?: number, year?: number) => {
-    try {
-      const params = new URLSearchParams({ userId });
-      if (month && year) {
-        params.append("month", month.toString());
-        params.append("year", year.toString());
+  const fetchWorkHours = useCallback(
+    async (userId: string, month?: number, year?: number) => {
+      try {
+        setLoading(true);
+        const params = new URLSearchParams({ userId });
+        if (month && year) {
+          params.append("month", month.toString());
+          params.append("year", year.toString());
+        }
+
+        const res = await fetch(`/api/workhours?${params.toString()}`);
+        if (!res.ok) {
+          console.error("Failed to fetch work hours");
+          setLoading(false);
+          return;
+        }
+
+        const data = await res.json();
+        const transformed: WorkHours = {};
+
+        for (const entry of data.workhours) {
+          const dateStr = entry.date.split("T")[0];
+          const userIdStr = String(entry.userId);
+          const projectKey = `project-${entry.projectId}`;
+
+          if (!transformed[dateStr]) transformed[dateStr] = {};
+          if (!transformed[dateStr][userIdStr]) transformed[dateStr][userIdStr] = {};
+
+          transformed[dateStr][userIdStr][projectKey] = {
+            hours: entry.hours,
+            note: entry.note,
+          };
+        }
+
+        setWorkHours(transformed);
+      } catch (error) {
+        console.error("Error fetching work hours:", error);
+      } finally {
+        setLoading(false);
       }
-
-      const res = await fetch(`/api/workhours?${params.toString()}`);
-      if (!res.ok) {
-        console.error("Failed to fetch work hours");
-        return;
-      }
-
-      const data = await res.json();
-      const transformed: WorkHours = {};
-
-      for (const entry of data.workhours) {
-        const dateStr = entry.date.split("T")[0];
-        const userIdStr = String(entry.userId);
-        const projectKey = `project-${entry.projectId}`;
-
-        if (!transformed[dateStr]) transformed[dateStr] = {};
-        if (!transformed[dateStr][userIdStr]) transformed[dateStr][userIdStr] = {};
-
-        transformed[dateStr][userIdStr][projectKey] = {
-          hours: entry.hours,
-          note: entry.note,
-        };
-      }
-
-      setWorkHours(transformed);
-    } catch (error) {
-      console.error("Error fetching work hours:", error);
-    }
-  };
+    },
+    []
+  );
 
   useEffect(() => {
-    fetchWorkHours("1"); // You might want to make userId dynamic later
-  }, []);
+    fetchWorkHours("1"); // Initial load with default userId "1", adjust as needed
+  }, [fetchWorkHours]);
 
   const setWorkHoursForProject = async (
     date: string,
@@ -87,7 +103,7 @@ export function WorkHoursProvider({ children }: { children: ReactNode }) {
     hours: number,
     note?: string
   ) => {
-    // Update local state optimistically
+    // Optimistically update local state
     setWorkHours((prev) => ({
       ...prev,
       [date]: {
@@ -122,9 +138,12 @@ export function WorkHoursProvider({ children }: { children: ReactNode }) {
     return total;
   };
 
-  const reloadWorkHours = async (userId: string, month?: number, year?: number) => {
-    await fetchWorkHours(userId, month, year);
-  };
+  const reloadWorkHours = useCallback(
+    async (userId: string, month?: number, year?: number) => {
+      await fetchWorkHours(userId, month, year);
+    },
+    [fetchWorkHours]
+  );
 
   return (
     <WorkHoursContext.Provider
@@ -134,6 +153,7 @@ export function WorkHoursProvider({ children }: { children: ReactNode }) {
         getTotalHoursForDay,
         getTotalHoursForProjectInMonth,
         reloadWorkHours,
+        loading,
       }}
     >
       {children}

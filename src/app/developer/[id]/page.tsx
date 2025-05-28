@@ -21,9 +21,8 @@ export default function Developer() {
 
   useEffect(() => {
     if (!userId) return;
-
     reloadWorkHours(userId, month + 1, year);
-  }, [userId, month, year]);
+  }, [userId, month, year, reloadWorkHours]);
 
   const onSignout = () => {
     signOut({ callbackUrl: `${window.location.origin}/login` });
