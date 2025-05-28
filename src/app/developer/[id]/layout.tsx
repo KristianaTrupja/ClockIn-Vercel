@@ -14,8 +14,15 @@ interface Props {
   params: { id: string };
 }
 
-export default async function DashboardLayout({ children, params }: Props) {
-  const resolveParams = await params;
+export default async function DashboardLayout({
+  children,
+  params,
+}: {
+  children: React.ReactNode;
+  params: Promise<{ id: string }>;
+}) {
+  const awaitedParams = await params;
+  const { id } = awaitedParams;
   const session = await getServerSession(authOptions);
 
   if (!session) {
@@ -27,9 +34,9 @@ export default async function DashboardLayout({ children, params }: Props) {
   let displayedRole = session.user?.role || "developer";
 
   // If viewing another user's page, fetch their info
-  if (resolveParams.id !== currentUserId) {
+  if (id !== currentUserId) {
     const otherUser = await db.user.findUnique({
-      where: { id: Number(params.id) }, // Convert id to a number
+      where: { id: Number(id) }, // Convert id to number if needed
       select: { username: true, role: true },
     });
 
@@ -61,7 +68,7 @@ export default async function DashboardLayout({ children, params }: Props) {
                 <SignOutButton />
               </div>
             </div>
-            <SidebarHeader/>
+            <SidebarHeader />
             <main className="2xl:w-fit flex">
               <Sidebar />
               {children}
