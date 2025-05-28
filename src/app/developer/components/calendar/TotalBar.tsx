@@ -33,6 +33,7 @@ export default function TotalBar() {
       return (
         acc +
         group.projects.reduce((subAcc, proj) => {
+          console.log(parsedProjects,"parsedProjects",userId, proj.projectKey, month + 1, year);
           return subAcc + getTotalHoursForProjectInMonth(userId, proj.projectKey, month + 1, year);
         }, 0)
       );
